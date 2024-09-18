@@ -56,3 +56,20 @@ flowchart LR
     user --Already Matched--> uc2
 
 ```
+
+```mermaid
+flowchart LR
+    subgraph 'Profile'
+    uc1((My list of demandes))
+    uc2((inbox))
+    uc3((Espace docs))
+    end
+    user[user]
+    admin[Admin]
+
+
+  
+    user --see--> uc1
+    user --access--> uc2
+    user --access--> uc3
+```
