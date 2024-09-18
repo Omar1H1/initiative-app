@@ -44,27 +44,14 @@ flowchart LR
 ```mermaid
 flowchart LR
     subgraph 'Other Profile'
-
-    uc2((Send a message))
-
-    end
-    user[user]
-    admin[Admin]
-
-    user --Already Matched--> uc2
-
-```
-
-```mermaid
-flowchart LR
-    subgraph 'Other Profile'
-
-    uc2((Unmatch))
+        uc1((Send a message))
+        uc2((Unmatch))
 
     end
     user[user]
     admin[Admin]
 
+    user -- Already Matched--> uc1
     user --Already Matched--> uc2
 
 ```
