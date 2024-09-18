@@ -54,3 +54,17 @@ flowchart LR
     user --Already Matched--> uc2
 
 ```
+
+```mermaid
+flowchart LR
+    subgraph 'Profile'
+
+    uc2((Unmatch))
+
+    end
+    user[user]
+    admin[Admin]
+
+    user --Already Matched--> uc2
+
+```
