@@ -1,0 +1,13 @@
+```mermaid
+flowchart LR
+    subgraph 'account init page'
+    uc1((access code))
+    uc2((account initiation))
+
+    end
+    user[user]
+    admin[Admin]
+
+    user --> uc1
+    uc1 -- include --> uc2
+```

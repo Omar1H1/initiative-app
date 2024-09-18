@@ -11,6 +11,6 @@ import java.util.Date;
 public class hello {
     @GetMapping("/api/hello")
     public String helloUser() {
-        return "Hello, the time at the server is now " + new Date() + "\n";
+        return "Hello, the time at the server now is " + new Date() + "\n";
     }
 }
