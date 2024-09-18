@@ -11,3 +11,17 @@ flowchart LR
     user --> uc1
     uc1 -- include --> uc2
 ```
+
+```mermaid
+flowchart LR
+    subgraph 'home page'
+    uc1((logged in))
+    uc2((profiles list))
+
+    end
+    user[user]
+    admin[Admin]
+
+    user --> uc1
+    uc1 -- include --> uc2
+```
