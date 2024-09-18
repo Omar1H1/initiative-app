@@ -8,6 +8,7 @@ flowchart LR
     user[user]
     admin[Admin]
 
+
     user --> uc1
     uc1 -- include --> uc2
 ```
@@ -24,4 +25,18 @@ flowchart LR
 
     user --> uc1
     uc1 -- include --> uc2
+```
+
+```mermaid
+flowchart LR
+    subgraph 'Other Profile'
+
+    uc2((Profile))
+
+    end
+    user[user]
+    admin[Admin]
+
+    user --Request / accept--> uc2
+
 ```
