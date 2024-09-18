@@ -9,7 +9,8 @@ flowchart LR
     admin[Admin]
 
 
-    user --> uc1
+    admin --Give--> user
+    user --use--> uc1
     uc1 -- include --> uc2
 ```
 
