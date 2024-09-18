@@ -43,7 +43,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph 'Profile'
+    subgraph 'Other Profile'
 
     uc2((Send a message))
 
@@ -57,7 +57,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph 'Profile'
+    subgraph 'Other Profile'
 
     uc2((Unmatch))
 
