@@ -11,7 +11,7 @@ flowchart LR
 
     admin --Give--> user
     user --use--> uc1
-    uc1 -- include --> uc2
+    uc1 -- to access --> uc2
 ```
 
 ```mermaid
