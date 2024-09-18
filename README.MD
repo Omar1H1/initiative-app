@@ -40,3 +40,17 @@ flowchart LR
     user --Request / accept--> uc2
 
 ```
+
+```mermaid
+flowchart LR
+    subgraph 'Profile'
+
+    uc2((Send a message))
+
+    end
+    user[user]
+    admin[Admin]
+
+    user --Already Matched--> uc2
+
+```
