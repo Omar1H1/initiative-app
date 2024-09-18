@@ -24,8 +24,8 @@ flowchart LR
     user[user]
     admin[Admin]
 
-    user --> uc1
-    uc1 -- include --> uc2
+    user -- should be --> uc1
+    uc1 -- to access --> uc2
 ```
 
 ```mermaid
