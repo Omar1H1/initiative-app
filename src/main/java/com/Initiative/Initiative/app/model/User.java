@@ -1,6 +1,4 @@
 package com.Initiative.Initiative.app.model;
-
-
 import com.Initiative.Initiative.app.enums.RoleEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,7 +35,4 @@ public class User {
     private String password;
 
     private LocalDateTime registrationDate;
-
-    private LocalDateTime activationDate;
-
 }

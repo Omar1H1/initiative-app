@@ -1,22 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
+
 
 export default function App() {
-  const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios.get('http://localhost:8080/api/hello');
-      setMessage(result.data);
-    };
-    fetchData();
-  }, []);
-
-        console.log(message);
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <p className="text-3xl font-bold underline">{message}</p>
-    </>
-  );
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={< Login/>} />
+      <Route path="/signup" element={< Signup/>} />
+      <Route path="/profile" element={< Profile/>} />
+      <Route path="*" element={<NotFound />}/>
+    </Routes>
+    </BrowserRouter>
+  )
 }
