@@ -20,7 +20,18 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          
+
+      - name: Install and Initialize PostgreSQL
+        uses: ikalnytskyi/action-setup-postgres@v6
+        with:
+          username: postgres
+          password: postgres
+          database: app
+          port: 5432
+          postgres-version: "16"
+          ssl: "on"
+        id: postgres
+
       - name: Checkout Code
         uses: actions/checkout@v2
 
@@ -33,4 +44,4 @@ jobs:
 
 
 
-          
+        
