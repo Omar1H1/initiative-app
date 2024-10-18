@@ -14,28 +14,24 @@ jobs:
 
   install-java:
     runs-on: ubuntu-latest
-
-    services:
-      # Label used to access the service container
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USERNAME: postgres
-          POSTGRES_DB: app
-
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-          
+
+      - name: Install and Initialize PostgreSQL
+        uses: ikalnytskyi/action-setup-postgres@v6
+        with:
+          username: postgres
+          password: postgres
+          database: app
+          port: 5432
+          postgres-version: "16"
+          ssl: "on"
+        id: postgres
+
       - name: Checkout Code
         uses: actions/checkout@v2
 
