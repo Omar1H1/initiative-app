@@ -4,7 +4,7 @@ package com.Initiative.Initiative.app.auth;
 import com.Initiative.Initiative.app.config.JwtService;
 import com.Initiative.Initiative.app.enums.RoleEnum;
 import com.Initiative.Initiative.app.model.User;
-import com.Initiative.Initiative.app.repository.UserRepository;
+import com.Initiative.Initiative.app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final UserRepository repository;
+    private final UserService repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
@@ -34,7 +34,7 @@ public class AuthenticationService {
                 .role(RoleEnum.PORTEUR)
                 .build();
 
-        repository.save(user);
+        repository.createUser(user);
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -49,7 +49,7 @@ public class AuthenticationService {
                 )
         );
 
-        var user = repository.findByEmail(request.getEmail())
+        var user = repository.getUserByEmail(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("user not found"));
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
