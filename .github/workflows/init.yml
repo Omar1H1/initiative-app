@@ -39,7 +39,8 @@ jobs:
         run: mvn -f pom.xml clean test
 
       - name: Generate Coverage Report
-        run: mvn jacoco:report
+        run: mvn jacoco:report jacoco:check
+  
 
 
 
