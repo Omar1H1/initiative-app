@@ -29,7 +29,8 @@ public class SecurityConfiguration {
 
                 .authorizeHttpRequests(authorize -> authorize
 
-                        .requestMatchers("/api/v1/demo").authenticated()// Allow all requests without authentication
+                        .requestMatchers("/api/v1/demo/public").permitAll()
+                        .requestMatchers("/api/v1/demo/secure").authenticated()
 
                         .anyRequest().permitAll()
 
