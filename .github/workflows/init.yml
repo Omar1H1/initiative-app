@@ -1,0 +1,36 @@
+name: Build and Run Tests
+
+on:
+  push:
+
+permissions:
+  contents: write
+
+jobs:
+  get-version:
+    uses: shiipou/github-actions/.github/workflows/get-version.yml@main
+    with:
+      release-branches: '^(main)$'
+
+  install-java:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Run Unit Tests with Coverage
+        run: mvn -f pom.xml clean test
+
+      - name: Generate Coverage Report
+        run: mvn jacoco:report
+
+
+
+
+          
