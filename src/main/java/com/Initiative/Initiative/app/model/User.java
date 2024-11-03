@@ -6,6 +6,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,6 +41,35 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
+
+    @Setter(AccessLevel.NONE)
+    @Column(unique = true)
+    private String activationCode;
+    
+    @Setter(AccessLevel.NONE)
+    private LocalDateTime activationCodeExpiryDate;
+    
+    private Boolean isActive;
+
+
+    private void autoSetActivationCodeExpiryDate () {
+        if (activationCodeExpiryDate == null) {
+            this.activationCodeExpiryDate = LocalDateTime.now().plusYears(3);
+        }
+    }
+
+    @PrePersist
+    public void autoGenerateActivationCode() {
+        if (activationCode == null || activationCode.isEmpty()) {
+            byte[] randomBytes = new byte[14];
+            new SecureRandom().nextBytes(randomBytes);
+            this.activationCode = Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
+            this.activationCodeExpiryDate = LocalDateTime.now().plusYears(3);
+        }
+    }
+    
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

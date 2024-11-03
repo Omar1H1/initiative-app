@@ -4,6 +4,7 @@ package com.Initiative.Initiative.app.auth;
 import com.Initiative.Initiative.app.config.JwtService;
 import com.Initiative.Initiative.app.enums.RoleEnum;
 import com.Initiative.Initiative.app.model.User;
+import com.Initiative.Initiative.app.service.MailSending;
 import com.Initiative.Initiative.app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ public class AuthenticationService {
     private final UserService repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final MailSending mailSending;
 
     @Autowired
     private final AuthenticationManager authenticationManager;
@@ -38,6 +40,23 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .build();
+    }
+
+    public PreRegisterCode preRegistration(PreRegisterRequest request) {
+        var user = User.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+                .role(request.getRole())
+                .build();
+
+        repository.createUser(user);
+
+        mailSending.sendEmail(user.getEmail(), "Activation code", "Hello " + user.getLastName() + " your activation code is " + user.getActivationCode());
+
+        return  PreRegisterCode.builder()
+                .activationCode(user.getActivationCode())
                 .build();
     }
 

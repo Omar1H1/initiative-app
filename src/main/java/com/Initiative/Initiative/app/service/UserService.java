@@ -1,9 +1,8 @@
 package com.Initiative.Initiative.app.service;
 
+import com.Initiative.Initiative.app.auth.RegisterRequest;
 import com.Initiative.Initiative.app.model.User;
 import com.Initiative.Initiative.app.repository.UserRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +41,17 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public Boolean accountHasBeenInitilized(RegisterRequest registerRequest) {
+        Optional<User> user = userRepository.findByEmail(registerRequest.getEmail());
+
+        return  user.isPresent();
+    }
+
+    public Optional<User> getUserByActivationCode(String activationCode) {
+        return userRepository.findByActivationCode(activationCode);
+
     }
 
 }
