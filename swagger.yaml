@@ -1,0 +1,170 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/v1/users/register:
+    post:
+      tags:
+      - user-controller
+      summary: Register a new user by User
+      description: "After the user get his/her/they email of confirmation they can\
+        \ send a register request On successful registration, an authentication response\
+        \ containing an access token will be returned."
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInfo"
+        required: true
+      responses:
+        "200":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationResponse"
+  /api/v1/users/preauthenticate:
+    post:
+      tags:
+      - user-controller
+      summary: Validate User activation Code
+      description: "After the user get his/her/they email of confirmation they are\
+        \ sent to an input form On successful registration (valid Activation Code),\
+        \ an authentication response containing user info that has been given when\
+        \ the admin initialized the account for more info check  '/api/v1/users/create' "
+      operationId: preAuthenticate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PreRegisterCode"
+        required: true
+      responses:
+        "200":
+          description: User has a valid Activation code
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PreRegister"
+  /api/v1/users/create:
+    post:
+      tags:
+      - user-controller
+      summary: Create a new user By Admin
+      description: "Create a new user by an Admin  On successful creation, an email\
+        \ is sent to the user email containing a link to register his/her/they account"
+      operationId: preRegister
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PreRegister"
+        required: true
+      responses:
+        "200":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PreRegister"
+  /api/v1/users/authenticate:
+    post:
+      tags:
+      - user-controller
+      summary: Authenticate user
+      description: 'A User can send a json object containing email and password  if
+        the email and password are related to a valid user then this endpoint will
+        return a JWT token '
+      operationId: authenticate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthenticationRequest"
+        required: true
+      responses:
+        "200":
+          description: User Info exists in DB
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationResponse"
+  /api/v1/demo/secure:
+    get:
+      tags:
+      - demo-controller
+      operationId: sayHelloFromSecure
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /api/v1/demo/public:
+    get:
+      tags:
+      - demo-controller
+      operationId: sayHello
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+components:
+  schemas:
+    AuthenticationResponse:
+      type: object
+      properties:
+        token:
+          type: string
+    RegisterInfo:
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    PreRegister:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum:
+          - ADMIN
+          - SUPERVISOR
+          - PARRAIN
+          - PORTEUR
+    PreRegisterCode:
+      type: object
+      properties:
+        activationCode:
+          type: string
+    AuthenticationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
