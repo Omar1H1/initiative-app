@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/Login";
-import Signup from "./components/Signup";
+import Create from "./components/Create.tsx";
 import Profile from "./components/Profile";
 import NotFound from "./components/NotFound";
 import NavBar from "./components/NavBar.tsx";
+import CodePage from "./components/CodePage.tsx";
 
 function App() {
   return (
@@ -14,8 +15,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+            <Route path="/signup" element={<Create />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/signup/submitcode" element={<CodePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

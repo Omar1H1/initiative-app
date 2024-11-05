@@ -12,17 +12,15 @@ const Navbar = () => {
     // Array containing navigation items
     const navItems = [
         { id: 1, text: 'Home' },
-        { id: 2, text: 'Company' },
-        { id: 3, text: 'Resources' },
-        { id: 4, text: 'About' },
-        { id: 5, text: 'Contact' },
+        { id: 2, text: 'À propos de nous' },
+        { id: 3, text: 'Nous contacter' },
     ];
 
     return (
         <div className='bg-transparent flex justify-between items-center h-24 max-w-[1240px] mx-auto px-4 text-white'>
-            {/* Logo */}
+
             <img src={logo} alt="Your Logo" className="w-48 h-auto bg-transparent bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% rounded-lg"/>
-            {/* Desktop Navigation */}
+
             <ul className='hidden md:flex'>
                 {navItems.map(item => (
                     <li
@@ -34,12 +32,10 @@ const Navbar = () => {
                 ))}
             </ul>
 
-            {/* Mobile Navigation Icon */}
             <div onClick={handleNav} className='block md:hidden'>
                 {nav ? <AiOutlineClose size={20}/> : <AiOutlineMenu size={20}/>}
             </div>
 
-            {/* Mobile Navigation Menu */}
             <ul
                 className={
                     nav
@@ -47,10 +43,9 @@ const Navbar = () => {
                         : 'ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%]'
                 }
             >
-                {/* Mobile Logo */}
+
                 <img src={logo} alt="Your Logo" className="w-48 h-auto bg-transparent"/>
 
-                {/* Mobile Navigation Items */}
                 {navItems.map(item => (
                     <li
                         key={item.id}

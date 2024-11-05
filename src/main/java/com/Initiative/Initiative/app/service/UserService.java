@@ -1,6 +1,6 @@
 package com.Initiative.Initiative.app.service;
 
-import com.Initiative.Initiative.app.auth.RegisterRequest;
+import com.Initiative.Initiative.app.auth.RegisterInfo;
 import com.Initiative.Initiative.app.model.User;
 import com.Initiative.Initiative.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Boolean accountHasBeenInitilized(RegisterRequest registerRequest) {
+    public Boolean accountHasBeenInitilized(RegisterInfo registerRequest) {
         Optional<User> user = userRepository.findByEmail(registerRequest.getEmail());
 
         return  user.isPresent();

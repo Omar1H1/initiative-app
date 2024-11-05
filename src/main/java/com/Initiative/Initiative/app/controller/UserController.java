@@ -3,7 +3,9 @@ package com.Initiative.Initiative.app.controller;
 import com.Initiative.Initiative.app.auth.*;
 import com.Initiative.Initiative.app.model.User;
 import com.Initiative.Initiative.app.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final AuthenticationService authenticationService;
@@ -23,10 +26,19 @@ public class UserController {
      * @return a ResponseEntity containing the authentication response or an error response
      */
     @PostMapping("/api/v1/users/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
-        Optional<User> existingUser = userService.getUserByEmail(request.getEmail());
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterInfo request, HttpServletResponse response) {        Optional<User> existingUser = userService.getUserByEmail(request.getEmail());
 
-        return ResponseEntity.ok(authenticationService.register(request));
+        User userInfo = User.builder()
+                .id(existingUser.get().getId())
+                .firstName(request.getFirstname())
+                .lastName(request.getLastname())
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .username(request.getUsername())
+                .role(existingUser.get().getRole())
+                .build();
+
+        return ResponseEntity.ok(authenticationService.register(userInfo));
     }
 
     /**
@@ -37,7 +49,7 @@ public class UserController {
      */
     @PostMapping("/api/v1/users/create")
     @CrossOrigin(origins = "*", allowedHeaders = "*", methods = RequestMethod.POST)
-    public ResponseEntity<PreRegisterCode> preRegister(@RequestBody PreRegisterRequest request) {
+    public ResponseEntity<PreRegisterCode> preRegister(@RequestBody PreRegister request) {
         return ResponseEntity.ok(authenticationService.preRegistration(request));
     }
 
@@ -59,10 +71,10 @@ public class UserController {
      * @return A ResponseEntity containing the user information or an error response
      */
     @PostMapping("/api/v1/users/preauthenticate")
-    public ResponseEntity<User> preAuthenticate(@RequestBody PreRegisterCode preRegisterCode) {
-        Optional<User> user = userService.getUserByActivationCode(preRegisterCode.getActivationCode());
+    @CrossOrigin(origins = "*", allowedHeaders = "*", methods = RequestMethod.POST)
+    public ResponseEntity<PreRegister> preAuthenticate(@RequestBody PreRegisterCode preRegisterCode) {
 
-        return user.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        log.warn(preRegisterCode.getActivationCode());
+        return ResponseEntity.ok(authenticationService.validateCode(preRegisterCode));
     }
 }

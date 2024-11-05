@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @NonNull
-public class PreRegisterRequest {
+public class PreRegister {
 
 
     private String firstName;

@@ -2,7 +2,7 @@ package com.Initiative.Initiative.app.auth;
 
 
 import com.Initiative.Initiative.app.config.JwtService;
-import com.Initiative.Initiative.app.enums.RoleEnum;
+
 import com.Initiative.Initiative.app.model.User;
 import com.Initiative.Initiative.app.service.MailSending;
 import com.Initiative.Initiative.app.service.UserService;
@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -23,27 +25,31 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final MailSending mailSending;
 
+
+
     @Autowired
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponse register(User request) {
         var user = User.builder()
-                .firstName(request.getFirstname())
-                .lastName(request.getLastname())
+                .id(request.getId())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(RoleEnum.PORTEUR)
+                .role(request.getRole())
                 .build();
 
         repository.createUser(user);
         var jwtToken = jwtService.generateToken(user);
+
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
     }
 
-    public PreRegisterCode preRegistration(PreRegisterRequest request) {
+    public PreRegisterCode preRegistration(PreRegister request) {
         var user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -53,12 +59,24 @@ public class AuthenticationService {
 
         repository.createUser(user);
 
-        mailSending.sendEmail(user.getEmail(), "Activation code", "Hello " + user.getLastName() + " your activation code is " + user.getActivationCode());
+        mailSending.sendEmail(user.getEmail(), "Activation code", "Hello " + user.getFirstName() + " click on this url to active your account " + "http://localhost:5173/signup/submitcode?code="  + user.getActivationCode());
 
         return  PreRegisterCode.builder()
                 .activationCode(user.getActivationCode())
                 .build();
     }
+
+    public PreRegister validateCode(PreRegisterCode preRegisterCode) {
+        Optional<User> user = repository.getUserByActivationCode(preRegisterCode.getActivationCode().trim());
+
+        return PreRegister.builder()
+                .firstName(user.get().getFirstName())
+                .lastName(user.get().getLastName())
+                .email(user.get().getEmail())
+                .role(user.get().getRole())
+                .build();
+    }
+
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
