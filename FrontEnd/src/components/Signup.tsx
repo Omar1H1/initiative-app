@@ -1,8 +1,12 @@
 import { useState } from "react";
-import axios from "axios";
+import {Axios} from "../service/Axios.tsx"
+import {useNavigate} from "react-router-dom";
+
+const api = new Axios().getInstance();
 
 const Signup = (props: any) => {
     const { userInfo } = props;
+    const navigate = useNavigate();
 
 
     const [firstName, setFirstName] = useState(userInfo.firstName || '');
@@ -23,13 +27,9 @@ const Signup = (props: any) => {
         };
 
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/users/register', data);
+            const response = await api.post('/api/v1/users/register', data);
             console.log('User has been created with success:', response.data);
-            if(rememberMe) {
-                localStorage.setItem("token", response.data.token)
-            } else {
-                sessionStorage.setItem("token", response.data.token)
-            }
+            navigate("/login")
         } catch (error) {
             console.error('Error during creation:', error);
         }

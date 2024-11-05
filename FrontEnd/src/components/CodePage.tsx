@@ -1,6 +1,8 @@
 import { useState } from "react";
-import axios from "axios";
 import Signup from "./Signup.tsx";
+import {Axios} from "../service/Axios.tsx"
+
+const api = new Axios().getInstance();
 
 const CodePage = () => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -22,7 +24,7 @@ const CodePage = () => {
                 activationCode: code,
             };
 
-            const response = await axios.post('http://localhost:8080/api/v1/users/preauthenticate', codeToActive);
+            const response = await api.post('/api/v1/users/preauthenticate', codeToActive);
 
             setUserInfo({
                 firstName: response.data.firstName,

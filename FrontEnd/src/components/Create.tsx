@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import axios from 'axios';
+import {Axios} from "../service/Axios.tsx"
+import {useNavigate} from "react-router-dom";
+
+const api = new Axios().getInstance();
 
 const roles = [
   { value: 'ADMIN', label: 'Admin' },
@@ -13,6 +16,7 @@ const Create = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('PORTEUR');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e : any) => {
     e.preventDefault();
@@ -25,8 +29,9 @@ const Create = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/users/create', data);
+      const response = await api.post('/api/v1/users/create', data);
       console.log('Pre-registration successful:', response.data);
+      navigate("/")
     } catch (error) {
       console.error('Error during pre-registration:', error);
     }

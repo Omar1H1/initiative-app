@@ -1,36 +1,59 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
-import logo from "../assets/logo.png"
+import { useNavigate } from 'react-router-dom';
+import logo from "../assets/logo.png";
 
 const Navbar = () => {
     const [nav, setNav] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const navigate = useNavigate();
+
+
+    useEffect(() => {
+        const token = localStorage.getItem("token") ?? sessionStorage.getItem("token");
+        setIsLoggedIn(token !== "");
+    }, []);
 
     const handleNav = () => {
         setNav(!nav);
     };
 
-    // Array containing navigation items
-    const navItems = [
-        { id: 1, text: 'Home' },
-        { id: 2, text: 'À propos de nous' },
-        { id: 3, text: 'Nous contacter' },
-    ];
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
+        setIsLoggedIn(false);
+        navigate("/");
+
+    };
+
+    const handleLogin = () => {
+        navigate("/login");
+    };
 
     return (
         <div className='bg-transparent flex justify-between items-center h-24 max-w-[1240px] mx-auto px-4 text-white'>
+            <img src={logo} alt="logo"
+                 className="w-48 h-auto bg-transparent bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% rounded-lg"/>
 
-            <img src={logo} alt="Your Logo" className="w-48 h-auto bg-transparent bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% rounded-lg"/>
-
-            <ul className='hidden md:flex'>
-                {navItems.map(item => (
+            {isLoggedIn ? (
+                <ul className='hidden md:flex'>
                     <li
-                        key={item.id}
+                        onClick={handleLogout}
                         className='p-4 hover:bg-[#ffc0cb] rounded-xl m-2 cursor-pointer duration-300 hover:text-black'
                     >
-                        {item.text}
+                        Logout
                     </li>
-                ))}
-            </ul>
+                </ul>
+            ) : (
+                <ul className='hidden md:flex'>
+                    <li
+                        onClick={handleLogin}
+                        className='p-4 hover:bg-[#ffc0cb] rounded-xl m-2 cursor-pointer duration-300 hover:text-black'
+                    >
+                        Login
+                    </li>
+                </ul>
+            )}
 
             <div onClick={handleNav} className='block md:hidden'>
                 {nav ? <AiOutlineClose size={20}/> : <AiOutlineMenu size={20}/>}
@@ -43,17 +66,22 @@ const Navbar = () => {
                         : 'ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%]'
                 }
             >
-
                 <img src={logo} alt="Your Logo" className="w-48 h-auto bg-transparent"/>
-
-                {navItems.map(item => (
+                {isLoggedIn ? (
                     <li
-                        key={item.id}
+                        onClick={handleLogout}
                         className='p-4 border-b rounded-xl hover:bg-[#ffc0cb] duration-300 hover:text-black cursor-pointer border-gray-600'
                     >
-                        {item.text}
+                        Logout
                     </li>
-                ))}
+                ) : (
+                    <li
+                        onClick={handleLogin}
+                        className='p-4 border-b rounded-xl hover:bg-[#ffc0cb] duration-300 hover:text-black cursor-pointer border-gray-600'
+                    >
+                        Login
+                    </li>
+                )}
             </ul>
         </div>
     );
