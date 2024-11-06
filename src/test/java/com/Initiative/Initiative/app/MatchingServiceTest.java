@@ -1,7 +1,20 @@
 package com.Initiative.Initiative.app;
 
+import com.Initiative.Initiative.app.enums.MatchStatus;
+import com.Initiative.Initiative.app.enums.RoleEnum;
+import com.Initiative.Initiative.app.model.Match;
+import com.Initiative.Initiative.app.model.User;
+import com.Initiative.Initiative.app.repository.MatchingRepository;
+import com.Initiative.Initiative.app.service.MatchingService;
+import com.Initiative.Initiative.app.service.MatchingServiceImpl;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -18,4 +31,52 @@ public class MatchingServiceTest {
                      1.1.1.4 - refuse a match, user can refuse a match
 
      */
+
+    @Mock
+    private MatchingRepository matchingRepository;
+
+    @InjectMocks
+    private MatchingServiceImpl matchingService;
+
+    @Test
+    void TestCreateMatching () {
+
+        // Given
+
+        User demander = User.builder()
+                .id(1L)
+                .firstName("John")
+                .lastName("Doe")
+                .email("test1@test.fr")
+                .username("johndoe")
+                .role(RoleEnum.PORTEUR)
+                .isActive(Boolean.TRUE)
+                .build();
+
+        User reciver = User.builder()
+                .id(2L)
+                .firstName("Alex")
+                .lastName("ali")
+                .email("test2@test.fr")
+                .username("alex11")
+                .role(RoleEnum.PORTEUR)
+                .isActive(Boolean.TRUE)
+                .build();
+
+        Match match = Match.builder()
+                .demander(demander)
+                        .receiver(reciver)
+                                .status(MatchStatus.pending)
+                                        .build();
+
+        // When
+
+        when(matchingRepository.save(match)).thenReturn(match);
+
+        Match foundMatch = matchingService.createMatch(match);
+
+        // Then
+
+        assertEquals(match, foundMatch);
+    }
 }
