@@ -25,6 +25,8 @@ public class Match {
     @ManyToOne
     private User receiver;
 
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "pending")
     private MatchStatus status;
 
 
