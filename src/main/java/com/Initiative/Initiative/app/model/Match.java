@@ -26,8 +26,8 @@ public class Match {
     private User receiver;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "pending")
-    private MatchStatus status;
+    @Builder.Default
+    private MatchStatus status = MatchStatus.pending;
 
 
 
