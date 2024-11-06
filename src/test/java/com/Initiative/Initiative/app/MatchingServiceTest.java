@@ -66,17 +66,26 @@ public class MatchingServiceTest {
         Match match = Match.builder()
                 .demander(demander)
                         .receiver(reciver)
-                                .status(MatchStatus.pending)
                                         .build();
+
+        Match expectedMatch = Match.builder()
+                .id(1L)
+                        .demander(demander)
+                                .receiver(reciver)
+                                        .build();
+
 
         // When
 
-        when(matchingRepository.save(match)).thenReturn(match);
+        when(matchingRepository.save(match)).thenReturn(expectedMatch);
 
         Match foundMatch = matchingService.createMatch(match);
 
         // Then
 
-        assertEquals(match, foundMatch);
+        assertEquals(expectedMatch.getId(), foundMatch.getId());
+        assertEquals(expectedMatch.getDemander().getId(), foundMatch.getDemander().getId());
+        assertEquals(expectedMatch.getReceiver().getId(), foundMatch.getReceiver().getId());
+        assertEquals(expectedMatch.getReceiver().getUsername(), foundMatch.getReceiver().getUsername());
     }
 }
