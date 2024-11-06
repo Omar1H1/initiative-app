@@ -1,6 +1,8 @@
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {Axios} from "../service/Axios.tsx"
+import isLogged from "../service/LoginState.tsx";
+
 
 const api = new Axios().getInstance();
 
@@ -10,6 +12,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+  const [_, setToken] = useContext(isLogged);
+
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -24,8 +28,10 @@ const Login = () => {
       console.log('User has been created with success:', response.data);
       if(rememberMe) {
         localStorage.setItem("token", response.data.token)
+        setToken(response.data.token)
       } else {
         sessionStorage.setItem("token", response.data.token)
+        setToken(response.data.token)
       }
       navigate("/")
 

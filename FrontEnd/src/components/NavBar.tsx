@@ -1,18 +1,15 @@
-import { useState, useEffect } from 'react';
+import {useState, useContext} from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import logo from "../assets/logo.png";
+import isLogged from "../service/LoginState.tsx";
 
 const Navbar = () => {
     const [nav, setNav] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
+    const [token, setToken] = useContext(isLogged);
 
 
-    useEffect(() => {
-        const token = localStorage.getItem("token") ?? sessionStorage.getItem("token");
-        setIsLoggedIn(token !== "");
-    }, []);
 
     const handleNav = () => {
         setNav(!nav);
@@ -21,7 +18,7 @@ const Navbar = () => {
     const handleLogout = () => {
         localStorage.removeItem("token");
         sessionStorage.removeItem("token");
-        setIsLoggedIn(false);
+        setToken(null);
         navigate("/");
 
     };
@@ -35,7 +32,7 @@ const Navbar = () => {
             <img src={logo} alt="logo"
                  className="w-48 h-auto bg-transparent bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% rounded-lg"/>
 
-            {isLoggedIn ? (
+            {token ? (
                 <ul className='hidden md:flex'>
                     <li
                         onClick={handleLogout}
@@ -67,7 +64,7 @@ const Navbar = () => {
                 }
             >
                 <img src={logo} alt="Your Logo" className="w-48 h-auto bg-transparent"/>
-                {isLoggedIn ? (
+                {token ? (
                     <li
                         onClick={handleLogout}
                         className='p-4 border-b rounded-xl hover:bg-[#ffc0cb] duration-300 hover:text-black cursor-pointer border-gray-600'
