@@ -52,6 +52,9 @@ public class User implements UserDetails {
     
     private Boolean isActive;
 
+    @OneToMany
+    private List<Match> matchList;
+
 
     private void autoSetActivationCodeExpiryDate () {
         if (activationCodeExpiryDate == null) {

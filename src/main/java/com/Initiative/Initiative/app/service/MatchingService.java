@@ -1,7 +1,9 @@
 package com.Initiative.Initiative.app.service;
 
+import com.Initiative.Initiative.app.model.Match;
+import com.Initiative.Initiative.app.model.User;
 
-import com.fasterxml.jackson.databind.deser.DataFormatReaders;
+import java.util.List;
 
 public interface MatchingService {
     Match createMatch(Match match);
