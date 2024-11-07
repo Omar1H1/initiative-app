@@ -3,6 +3,7 @@ package com.Initiative.Initiative.app.service;
 import com.Initiative.Initiative.app.auth.RegisterInfo;
 import com.Initiative.Initiative.app.model.User;
 import com.Initiative.Initiative.app.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     @Autowired
@@ -43,7 +45,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Boolean accountHasBeenInitilized(RegisterInfo registerRequest) {
+    public Boolean accountHasBeenInitiated(RegisterInfo registerRequest) {
         Optional<User> user = userRepository.findByEmail(registerRequest.getEmail());
 
         return  user.isPresent();

@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,16 +35,16 @@ public class UserController {
                     = AuthenticationResponse.class)))}
     )
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterInfo request) {
-        Optional<User> existingUser = userService.getUserByEmail(request.getEmail());
+        User existingUser = userService.getUserByEmail(request.getEmail()).orElseThrow();
 
         User userInfo = User.builder()
-                .id(existingUser.get().getId())
+                .id(existingUser.getId())
                 .firstName(request.getFirstname())
                 .lastName(request.getLastname())
                 .email(request.getEmail())
                 .password(request.getPassword())
                 .username(request.getUsername())
-                .role(existingUser.get().getRole())
+                .role(existingUser.getRole())
                 .build();
 
         return ResponseEntity.ok(authenticationService.register(userInfo));

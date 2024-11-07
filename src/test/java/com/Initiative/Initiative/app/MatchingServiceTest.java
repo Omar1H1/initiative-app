@@ -6,7 +6,6 @@ import com.Initiative.Initiative.app.model.Match;
 import com.Initiative.Initiative.app.model.User;
 import com.Initiative.Initiative.app.repository.MatchingRepository;
 import com.Initiative.Initiative.app.service.MatchingServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -14,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -22,7 +20,7 @@ import static org.mockito.Mockito.when;
 public class MatchingServiceTest {
 
     /*
-      - what do i need ?
+      - what do I need ?
         1 - Matching Service
             1.1 - matching service needs to implement a matching service Interface
                1.1.1 - matching service interface should have the following methods
@@ -56,7 +54,7 @@ public class MatchingServiceTest {
                 .isActive(Boolean.TRUE)
                 .build();
 
-        User reciver = User.builder()
+        User receiver = User.builder()
                 .id(2L)
                 .firstName("Alex")
                 .lastName("ali")
@@ -68,13 +66,13 @@ public class MatchingServiceTest {
 
         Match match = Match.builder()
                 .demander(demander)
-                        .receiver(reciver)
+                        .receiver(receiver)
                                         .build();
 
         Match expectedMatch = Match.builder()
                 .id(1L)
                         .demander(demander)
-                                .receiver(reciver)
+                                .receiver(receiver)
                                         .build();
 
 
@@ -107,7 +105,7 @@ public class MatchingServiceTest {
                 .isActive(Boolean.TRUE)
                 .build();
 
-        User reciver = User.builder()
+        User receiver = User.builder()
                 .id(2L)
                 .firstName("Alex")
                 .lastName("ali")
@@ -119,13 +117,13 @@ public class MatchingServiceTest {
 
         Match match = Match.builder()
                 .demander(demander)
-                .receiver(reciver)
+                .receiver(receiver)
                 .build();
 
         Match expectedMatch = Match.builder()
                 .id(1L)
                 .demander(demander)
-                .receiver(reciver)
+                .receiver(receiver)
                 .build();
 
 

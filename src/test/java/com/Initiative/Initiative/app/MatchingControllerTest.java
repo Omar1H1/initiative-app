@@ -1,19 +1,15 @@
 package com.Initiative.Initiative.app;
 
-import com.Initiative.Initiative.app.enums.MatchStatus;
 import com.Initiative.Initiative.app.model.Match;
 import com.Initiative.Initiative.app.model.MatchRequest;
 import com.Initiative.Initiative.app.model.User;
 import com.Initiative.Initiative.app.repository.MatchingRepository;
 import com.Initiative.Initiative.app.repository.UserRepository;
-import com.Initiative.Initiative.app.service.MatchingService;
 import com.Initiative.Initiative.app.service.MatchingServiceImpl;
 import com.Initiative.Initiative.app.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;

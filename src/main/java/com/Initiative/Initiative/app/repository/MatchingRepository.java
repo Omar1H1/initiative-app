@@ -12,4 +12,5 @@ import java.util.List;
 public interface MatchingRepository extends JpaRepository<Match, Long> {
 
     List<Match> findAllByReceiver(User receiver);
+    List<Match> findAllByDemander(User demander);
 }

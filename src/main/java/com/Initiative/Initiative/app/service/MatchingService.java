@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface MatchingService {
     Match createMatch(Match match);
-    List<Match> hasMatches(User user);
+    List<Match> receiverHasMatches(User user);
+    List<Match> demanderHasMatches(User user);
     Match rejectMatch(Match match);
 }

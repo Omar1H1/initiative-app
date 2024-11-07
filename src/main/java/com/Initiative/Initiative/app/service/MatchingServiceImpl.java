@@ -4,16 +4,17 @@ import com.Initiative.Initiative.app.enums.MatchStatus;
 import com.Initiative.Initiative.app.model.Match;
 import com.Initiative.Initiative.app.model.User;
 import com.Initiative.Initiative.app.repository.MatchingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class MatchingServiceImpl implements MatchingService {
 
-    @Autowired
-    private MatchingRepository matchingRepository;
+
+    private final MatchingRepository matchingRepository;
 
     @Override
     public Match createMatch(Match match) {
@@ -21,8 +22,13 @@ public class MatchingServiceImpl implements MatchingService {
     }
 
     @Override
-    public List<Match> hasMatches(User user) {
+    public List<Match> receiverHasMatches(User user) {
         return matchingRepository.findAllByReceiver(user);
+    }
+
+    @Override
+    public List<Match> demanderHasMatches(User user) {
+        return matchingRepository.findAllByDemander(user);
     }
 
     @Override

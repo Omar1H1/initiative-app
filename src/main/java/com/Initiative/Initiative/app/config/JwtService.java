@@ -3,7 +3,6 @@ package com.Initiative.Initiative.app.config;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,9 +53,7 @@ public class JwtService {
         try {
             final String username = extractUsername(token);
             return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
-        } catch (ExpiredJwtException e) {
-            return false;
-        } catch (SignatureException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -77,8 +74,6 @@ public class JwtService {
                     .parseSignedClaims(token)
                     .getPayload();
         } catch (ExpiredJwtException e) {
-            throw e;
-        } catch (SignatureException e) {
             throw e;
         } catch (Exception e) {
             return null;

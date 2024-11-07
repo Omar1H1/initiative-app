@@ -56,11 +56,8 @@ public class User implements UserDetails {
     private List<Match> matchList;
 
 
-    private void autoSetActivationCodeExpiryDate () {
-        if (activationCodeExpiryDate == null) {
-            this.activationCodeExpiryDate = LocalDateTime.now().plusYears(3);
-        }
-    }
+
+
 
     @PrePersist
     public void autoGenerateActivationCode() {
@@ -92,7 +89,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return LocalDateTime.now().isBefore(this.activationCodeExpiryDate);
     }
 
     @Override
@@ -107,6 +104,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isActive;
     }
 }
