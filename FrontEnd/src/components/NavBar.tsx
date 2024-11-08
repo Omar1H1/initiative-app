@@ -45,7 +45,7 @@ const Navbar = () => {
                 <ul className='hidden md:flex'>
                     <li
                         onClick={handleLogin}
-                        className='p-4 hover:bg-[#ffc0cb] rounded-xl m-2 cursor-pointer duration-300 hover:text-black'
+                        className='p-4 hover:bg-blue-700 rounded-xl m-2 cursor-pointer duration-300 hover:text-white'
                     >
                         Login
                     </li>

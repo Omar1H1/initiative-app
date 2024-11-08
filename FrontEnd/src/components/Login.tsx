@@ -61,7 +61,7 @@ const Login = () => {
 
               <div className="mb-4">
                 <label htmlFor="password" className="block text-gray-700 text-lg font-bold mb-2">
-                  Password
+                  mot de passe
                 </label>
                 <input
                     type="password"
@@ -74,15 +74,17 @@ const Login = () => {
 
               <div className="mb-4">
                 <label htmlFor="rememberme" className="block text-gray-700 text-lg font-bold mb-2">
-                  Remember Me
-                </label>
-                <input
-                    type="checkbox"
-                    id="rememberme"
+                  <input
+                      className="text-sm"
+                      type="checkbox"
+                      id="rememberme"
 
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                />
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                  />
+                  <span className="ml-2 text-sm">Souvenez-vous de moi</span>
+
+                </label>
               </div>
 
               <div className="mb-6">
@@ -91,6 +93,11 @@ const Login = () => {
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
                 >
                   Login
+                </button>
+                <p className="py-6"
+                >• Vous n'avez pas encore vos identifiants ?</p>
+                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded focus:outline-none focus:shadow-outline ">
+                  Contactez nous
                 </button>
               </div>
             </form>

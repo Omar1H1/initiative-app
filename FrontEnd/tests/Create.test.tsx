@@ -1,3 +1,4 @@
+// @ts-ignore
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Create from '../src/components/Create';
@@ -30,8 +31,8 @@ vi.mock('axios', async (importActual) => {
 describe('Create component', () => {
     beforeEach(() => {
         // Reset the mock before each test
-        mocks.post.mockClear();
-        mocks.get.mockClear();
+        mocks.post.mockReset();
+        mocks.get.mockReset();
     });
 
     it('should render the form correctly', () => {
