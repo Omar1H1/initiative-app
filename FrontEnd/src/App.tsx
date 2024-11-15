@@ -8,6 +8,8 @@ import CodePage from "./components/CodePage.tsx";
 import IsLogged from "./service/LoginState.tsx";
 import { useState } from "react";
 import Hero from "./components/Hero.tsx";
+import ContactFrom from "./components/ContactFrom.tsx";
+import PasswordRecovery from "./components/PasswordRecovery.tsx.tsx";
 
 const App = () => {
   const [token, setToken] = useState(
@@ -17,20 +19,19 @@ const App = () => {
   const value = [token, setToken];
 
   return (
-    // @ts-ignore
     <IsLogged.Provider value={value}>
       <BrowserRouter>
         <NavBar />
-        <div className="absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]">
-          <Routes>
-            <Route path="/" element={<Hero />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Create />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/signup/submitcode" element={<CodePage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </div>
+        <Routes>
+          <Route path="/" element={<Hero />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Create />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/signup/submitcode" element={<CodePage />} />
+          <Route path="/contact" element={<ContactFrom />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path="/passwordrecovery" element={<PasswordRecovery />} />
+        </Routes>
       </BrowserRouter>
     </IsLogged.Provider>
   );

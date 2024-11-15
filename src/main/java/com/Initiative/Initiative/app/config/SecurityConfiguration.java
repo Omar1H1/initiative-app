@@ -52,6 +52,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/docs").permitAll()
                         .requestMatchers("/api/v1/users/**").permitAll()
                         .requestMatchers("/api/v1/match").permitAll()
+                        .requestMatchers("/api/v1/contact").permitAll()
                         .requestMatchers("/api/v1/demo/secure").authenticated()
 
                         .anyRequest().permitAll()

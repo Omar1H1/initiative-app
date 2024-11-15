@@ -25,11 +25,11 @@ const Hero = () => {
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row h-[400px] w-auto m-20 bg-gradient-to-b from-indigo-600 to-blue-500 text-white p-20 rounded-lg">
+      <div className="flex flex-col md:flex-row h-[600px] w-auto m-20 bg-gradient-to-b from-[#360033] to-[#0b8793] text-white p-20 rounded-lg">
         {/* Left Side - Text Content */}
-        <div className="md:w-1/2 flex flex-col justify-center items-start p-4 text-center md:text-left p-15">
+        <div className="md:w-1/2 flex flex-col justify-center items-start p-4 text-center md:text-left p-15 relative">
           <h1 className="text-2xl font-extrabold mb-4 leading-25">
-            Nous facilitons la mise en relation du nos{" "}
+            Nous facilitons la mise en relation de nos{" "}
             <span
               className={`px-2 py-1 border-2 leading-20 rounded-lg border-blue-500 transition-opacity duration-500 ${fade ? "opacity-100" : "opacity-0"}`}
               style={{ backgroundColor: "rgba(29, 78, 216, 0.2)" }}
@@ -47,7 +47,7 @@ const Hero = () => {
           </h1>
           <div className="flex justify-center md:justify-start gap-4">
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline absolute items-center"
               onClick={handleClick}
             >
               Commencer

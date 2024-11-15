@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -104,5 +106,22 @@ public class UserController {
 
         log.warn(preRegisterCode.getActivationCode());
         return ResponseEntity.ok(authenticationService.validateCode(preRegisterCode));
+    }
+
+    @PostMapping("/api/v1/users/forgetpassword")
+    @CrossOrigin(origins = "*", allowedHeaders = "*", methods = RequestMethod.POST)
+    @Operation(summary = "Send an email to reset password",
+            description = "After the user get his/her/they email of confirmation they are sent to an input form " +
+                    "On successful registration (valid Activation Code), an authentication response containing user info that has been given when the admin " +
+                     "initialized the account for more info check  '/api/v1/users/create' ",
+            responses = {@ApiResponse(responseCode = "200", description = "User has a valid Activation code", content = @Content(mediaType = "application/json", schema = @Schema(implementation =
+                    PasswordRecoveryInfo.class)))}
+    )
+    public ResponseEntity<?> forgetPassword(@RequestBody PasswordRecoveryInfo passwordRecoveryInfo) {
+        Optional<User> expectedUser = authenticationService.getUserByEmail(passwordRecoveryInfo);
+        if (expectedUser.isEmpty()) {
+            return ResponseEntity.status(404).body("No user with provided email " + passwordRecoveryInfo.getEmail() + " found");
+        }
+        return ResponseEntity.status(200).body("User with provided email exists");
     }
 }

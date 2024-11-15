@@ -25,10 +25,6 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final MailSending mailSending;
-
-
-
-    @Autowired
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(User request) {
@@ -97,5 +93,9 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
+    }
+
+    public Optional<User> getUserByEmail(PasswordRecoveryInfo email) {
+        return repository.getUserByEmail(email.getEmail());
     }
 }

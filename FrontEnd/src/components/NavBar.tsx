@@ -1,8 +1,9 @@
 import { useState, useContext } from "react";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { _, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.svg";
 import isLogged from "../service/LoginState.tsx";
+import { CiLogin, CiLogout } from "react-icons/ci";
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
@@ -24,31 +25,42 @@ const Navbar = () => {
     navigate("/login");
   };
 
+  const handleLogoCLick = () => {
+    navigate("/");
+  };
+
   return (
     <div className="bg-transparent flex justify-between items-center h-24 max-w-[1240px] mx-auto px-4 text-white">
-      <img
-        src={logo}
-        alt="logo"
-        className="w-48 h-auto bg-transparent bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% rounded-lg"
-      />
-
+      <button onClick={handleLogoCLick}>
+        <img
+          src={logo}
+          alt="logo"
+          className="w-48 h-auto bg-transparent rounded-lg"
+        />
+      </button>
       {token ? (
         <ul className="hidden md:flex">
-          <li
-            onClick={handleLogout}
-            className="p-4 hover:bg-[#ffc0cb] rounded-xl m-2 cursor-pointer duration-300 hover:text-black"
-          >
-            Logout
-          </li>
+          <div className="relative">
+            <li
+              onClick={handleLogout}
+              className="p-4 hover:bg-[#ffc0cb] rounded-xl m-2 cursor-pointer duration-300 hover:text-black"
+            >
+              Logout
+            </li>
+            <CiLogout className="absolute size-6  ml-16 top-1/2 transform -translate-y-1/2" />
+          </div>
         </ul>
       ) : (
         <ul className="hidden md:flex">
-          <li
-            onClick={handleLogin}
-            className="p-4 hover:bg-blue-700 rounded-xl m-2 cursor-pointer duration-300 hover:text-white"
-          >
-            Login
-          </li>
+          <div className="relative">
+            <li
+              onClick={handleLogin}
+              className="bg-blue-400 p-4 hover:bg-blue-700 rounded-xl m-2 cursor-pointer duration-300 hover:text-white w-20"
+            >
+              Login
+            </li>
+            <CiLogin className="absolute size-6  ml-16 top-1/2 transform -translate-y-1/2" />
+          </div>
         </ul>
       )}
 
