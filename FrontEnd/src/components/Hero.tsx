@@ -31,7 +31,7 @@ const Hero = () => {
           <h1 className="text-2xl font-extrabold mb-4 leading-25">
             Nous facilitons la mise en relation de nos{" "}
             <span
-              className={`px-2 py-1 border-2 leading-20 rounded-lg border-blue-500 transition-opacity duration-500 ${fade ? "opacity-100" : "opacity-0"}`}
+              className={` animate-pulse px-2 py-1 border-2 leading-20 rounded-lg border-blue-500 transition-opacity duration-500 ${fade ? "opacity-100" : "opacity-0"}`}
               style={{ backgroundColor: "rgba(29, 78, 216, 0.2)" }}
             >
               {entrepreneursWords[index]}
@@ -39,7 +39,7 @@ const Hero = () => {
             <br />
             avec des{" "}
             <span
-              className={`px-2 py-1 border-2 leading-20 rounded-lg border-purple-500 transition-opacity duration-500 ${fade ? "opacity-100" : "opacity-0"}`}
+              className={`animate-pulse px-2 py-1 border-2 leading-20 rounded-lg my-6 border-purple-500 transition-opacity duration-500 ${fade ? "opacity-100" : "opacity-0"}`}
               style={{ backgroundColor: "rgba(126, 34, 206, 0.2)" }}
             >
               {mentorsWords[index]}

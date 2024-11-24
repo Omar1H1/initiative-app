@@ -9,7 +9,8 @@ import IsLogged from "./service/LoginState.tsx";
 import { useState } from "react";
 import Hero from "./components/Hero.tsx";
 import ContactFrom from "./components/ContactFrom.tsx";
-import PasswordRecovery from "./components/PasswordRecovery.tsx.tsx";
+import PasswordRecovery from "./components/PasswordRecovery.tsx";
+import ResetPassword from "./components/ResetPassword.tsx";
 
 const App = () => {
   const [token, setToken] = useState(
@@ -19,6 +20,7 @@ const App = () => {
   const value = [token, setToken];
 
   return (
+    // @ts-ignore
     <IsLogged.Provider value={value}>
       <BrowserRouter>
         <NavBar />
@@ -31,6 +33,7 @@ const App = () => {
           <Route path="/contact" element={<ContactFrom />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/passwordrecovery" element={<PasswordRecovery />} />
+          <Route path="/passwordreset" element={<ResetPassword />} />
         </Routes>
       </BrowserRouter>
     </IsLogged.Provider>

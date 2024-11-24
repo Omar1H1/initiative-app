@@ -1,7 +1,9 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Axios } from "../service/Axios.tsx";
 import isLogged from "../service/LoginState.tsx";
+import { CgSpinnerAlt } from "react-icons/cg";
+
 
 import { FaEyeSlash, FaEye } from "react-icons/fa";
 
@@ -14,9 +16,14 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const [, setToken] = useContext(isLogged);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: Event) => {
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+      setIsLoading(true);
+
 
     const data = {
       email,
@@ -36,6 +43,8 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       console.error("Error during creation:", error);
+    }finally {
+      setIsLoading(false);
     }
   };
 
@@ -55,12 +64,14 @@ const Login = () => {
     <>
       <div className="bg-transparent h-screen flex items-center justify-center rounded-lg">
         <div className="bg-transparent bg-gradient-to-r from-cyan-300 to-blue-100 w-4/12 shadow-md px-8 pt-6 pb-8 mb-4 rounded-lg bg-opacity-90 backdrop-filter backdrop-blur-lg backdrop-brightness-50">
-          <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+          <h2 className="text-sm font-bold mb-6 text-center sm:text-2xl">
+            Login
+          </h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label
                 htmlFor="email"
-                className="block text-gray-700 text-lg font-bold mb-2"
+                className="text-sm sm:block text-gray-700 sm:text-lg font-bold mb-2"
               >
                 Email
               </label>
@@ -88,6 +99,7 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
+                    type="button"
                   className="absolute right-3 top-1/2 transform -translate-y-1/2"
                   onClick={handleShowPasswordToggle}
                 >
@@ -114,10 +126,18 @@ const Login = () => {
             </div>
             <div className="mb-6">
               <button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                  type="submit"
+                  className=" hover:animate-bounce flex items-center justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline 1   
+1.
+github.com
+github.com
+ w-full"
               >
-                Login
+                {isLoading ? (
+                    <CgSpinnerAlt className="animate-spin h-6 w-6"/>
+                ) : (
+                    "Login"
+                )}
               </button>
 
               <button className="py-2" onClick={handleForgetPasswordClick}>
@@ -127,7 +147,7 @@ const Login = () => {
                 • Vous n'avez pas encore vos identifiants ?
               </p>
               <button
-                onClick={handleContactCLick}
+                  onClick={handleContactCLick}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded focus:outline-none focus:shadow-outline "
               >
                 Contactez nous

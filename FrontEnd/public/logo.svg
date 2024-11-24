@@ -1,0 +1,5 @@
+<svg width="200" height="100" xmlns="http://www.w3.org/2000/svg">
+  <text x="50" y="50" font-size="60" font-weight="bold" fill="linear-gradient(to right, #ff0000, #ffff00)">T</text>
+  <text x="100" y="50" font-size="60" font-weight="bold" fill="linear-gradient(to right, #00ff00, #0000ff)">T</text>
+  <text x="150" y="50" font-size="60" font-weight="bold" fill="#000000">M</text>
+</svg>
