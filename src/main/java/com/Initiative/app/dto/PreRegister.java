@@ -1,4 +1,4 @@
-package com.Initiative.app.auth;
+package com.Initiative.app.dto;
 
 import com.Initiative.app.enums.RoleEnum;
 import lombok.*;

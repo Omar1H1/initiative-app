@@ -1,9 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Axios } from "../service/Axios.tsx";
-import isLogged from "../service/LoginState.tsx";
+import loginAtom from "../service/LoginState.tsx";
 import { CgSpinnerAlt } from "react-icons/cg";
-
+import { useSetAtom } from "jotai";
 
 import { FaEyeSlash, FaEye } from "react-icons/fa";
 
@@ -15,15 +15,13 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
-  const [, setToken] = useContext(isLogged);
+  const setToken = useSetAtom(loginAtom);
   const [isLoading, setIsLoading] = useState(false);
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-      setIsLoading(true);
-
+    setIsLoading(true);
 
     const data = {
       email,
@@ -43,7 +41,7 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       console.error("Error during creation:", error);
-    }finally {
+    } finally {
       setIsLoading(false);
     }
   };
@@ -99,7 +97,7 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
-                    type="button"
+                  type="button"
                   className="absolute right-3 top-1/2 transform -translate-y-1/2"
                   onClick={handleShowPasswordToggle}
                 >
@@ -126,28 +124,31 @@ const Login = () => {
             </div>
             <div className="mb-6">
               <button
-                  type="submit"
-                  className=" hover:animate-bounce flex items-center justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline 1   
+                type="submit"
+                className=" hover:animate-bounce flex items-center justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline 1   
 1.
 github.com
 github.com
  w-full"
               >
                 {isLoading ? (
-                    <CgSpinnerAlt className="animate-spin h-6 w-6"/>
+                  <CgSpinnerAlt className="animate-spin h-6 w-6" />
                 ) : (
-                    "Login"
+                  "Login"
                 )}
               </button>
 
               <button className="py-2" onClick={handleForgetPasswordClick}>
-                <a className="py-2"> • mot de passe oublié? cliquez ici</a>
+                <a className="py-2 hover:text-blue-700">
+                  {" "}
+                  • mot de passe oublié? cliquez ici
+                </a>
               </button>
               <p className="py-2">
                 • Vous n'avez pas encore vos identifiants ?
               </p>
               <button
-                  onClick={handleContactCLick}
+                onClick={handleContactCLick}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded focus:outline-none focus:shadow-outline "
               >
                 Contactez nous

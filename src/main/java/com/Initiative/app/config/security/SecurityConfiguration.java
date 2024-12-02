@@ -1,5 +1,6 @@
-package com.Initiative.app.config;
+package com.Initiative.app.config.security;
 
+import com.Initiative.app.config.core.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,6 +55,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/match").permitAll()
                         .requestMatchers("/api/v1/contact").permitAll()
                         .requestMatchers("/api/v1/demo/secure").authenticated()
+                        .requestMatchers("/api/v1/profiles").authenticated()
 
                         .anyRequest().permitAll()
 

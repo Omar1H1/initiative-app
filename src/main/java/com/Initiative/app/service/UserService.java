@@ -1,14 +1,18 @@
 package com.Initiative.app.service;
 
-import com.Initiative.app.auth.RegisterInfo;
+import com.Initiative.app.dto.RegisterInfo;
+import com.Initiative.app.dto.UserDTO;
+import com.Initiative.app.enums.RoleEnum;
 import com.Initiative.app.model.User;
 import com.Initiative.app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,4 +60,22 @@ public class UserService {
 
     }
 
+
+    public List<UserDTO> getUsersByRole(RoleEnum role) {
+        return userRepository.findByRole(role).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    private UserDTO convertToDTO(User user) {
+        return UserDTO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .build();
+
+    }
 }

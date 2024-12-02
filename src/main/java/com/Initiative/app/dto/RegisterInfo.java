@@ -1,4 +1,4 @@
-package com.Initiative.app.auth;
+package com.Initiative.app.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -10,7 +10,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PasswordResetInfo {
-    private String activationCode;
+public class RegisterInfo {
+
+    private String firstname;
+
+    private String lastname;
+
+    private String username;
+
+    private String email;
+
     private String password;
 }

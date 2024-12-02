@@ -1,5 +1,6 @@
 package com.Initiative.app.model;
 import com.Initiative.app.enums.RoleEnum;
+import com.Initiative.app.enums.SectorsOfActivity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,6 +40,8 @@ public class User implements UserDetails {
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private SectorsOfActivity sectorOfActivity;
 
     @Enumerated(EnumType.STRING)
     private RoleEnum role;

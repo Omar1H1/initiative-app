@@ -1,6 +1,5 @@
-import {Context, createContext} from "react";
+import { atom } from "jotai";
 
-// @ts-ignore
-const isLogged: Context<[string | null, React.Dispatch<React.SetStateAction<string | null>>]> = createContext([]);
+const loginAtom = atom<string | null>(null);
 
-export default isLogged;
+export default loginAtom;

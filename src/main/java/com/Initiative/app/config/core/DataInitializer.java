@@ -1,4 +1,4 @@
-package com.Initiative.app.config;
+package com.Initiative.app.config.core;
 
 import com.Initiative.app.enums.RoleEnum;
 import com.Initiative.app.model.User;

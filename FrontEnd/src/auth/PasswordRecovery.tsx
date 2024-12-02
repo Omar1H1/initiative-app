@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Axios } from "../service/Axios";
+import { Axios } from "../service/Axios.tsx";
 
 const api = new Axios().getInstance();
 

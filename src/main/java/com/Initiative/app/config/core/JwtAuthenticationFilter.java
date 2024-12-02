@@ -1,4 +1,4 @@
-package com.Initiative.app.config;
+package com.Initiative.app.config.core;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

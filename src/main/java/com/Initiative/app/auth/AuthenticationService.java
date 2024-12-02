@@ -1,8 +1,9 @@
 package com.Initiative.app.auth;
 
 
-import com.Initiative.app.config.JwtService;
+import com.Initiative.app.config.core.JwtService;
 
+import com.Initiative.app.dto.*;
 import com.Initiative.app.model.User;
 import com.Initiative.app.service.MailSending;
 import com.Initiative.app.service.UserService;

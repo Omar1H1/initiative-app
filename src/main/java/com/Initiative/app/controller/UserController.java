@@ -1,17 +1,24 @@
 package com.Initiative.app.controller;
 
 import com.Initiative.app.auth.*;
+import com.Initiative.app.dto.*;
 import com.Initiative.app.model.User;
 import com.Initiative.app.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * REST controller for managing user-related actions such as registration, authentication,
@@ -26,112 +33,166 @@ public class UserController {
     private final AuthenticationService authenticationService;
     private final UserService userService;
 
-    /**
-     * Register a new user.
-     *
-     * @param request The user registration details.
-     * @return Response containing the authentication token.
-     */
+
     @PostMapping("/register")
     @Operation(
             summary = "Register a new user",
-            description = "Registers a new user after receiving confirmation email. Returns an authentication token.",
-            responses = @ApiResponse(
-                    responseCode = "200",
-                    description = "User registered successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthenticationResponse.class))
-            )
+            description = "Registers a new user after receiving a confirmation email. " +
+                    "Upon successful registration, an authentication token is returned.",
+            parameters = {
+                    @Parameter(name = "request", description = "User  registration details including email, password, and any additional required fields.", required = true,
+                            schema = @Schema(implementation = RegisterInfo.class))
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "User  registered successfully. An authentication token is returned.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthenticationResponse.class,
+                                    example = "{\"token\": \"your-authentication-token\"}"))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad Request. The request body is missing required fields or contains invalid data.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(
+                                    example = "{\"error\": \"Email is required\"}"))
+                    ),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Conflict. A user with the provided email already exists.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(
+                                    example = "{\"error\": \"User  already exists with this email\"}"))
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal server error occurred while processing the request.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(
+                                    example = "{\"error\": \"Internal server error\"}"))
+                    )
+            }
     )
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterInfo request) {
-        User existingUser = userService.getUserByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + request.getEmail()));
-
-        User userToRegister = buildUserFromRequest(existingUser, request);
+        User existingUser  = userService.getUserByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User  not found with email: " + request.getEmail()));
+        User userToRegister = buildUserFromRequest(existingUser , request);
         return ResponseEntity.ok(authenticationService.register(userToRegister));
     }
 
-    /**
-     * Pre-register a new user by admin.
-     *
-     * @param request The pre-registration details.
-     * @return Response containing the pre-registration code.
-     */
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR')")
     @PostMapping("/create")
     @CrossOrigin(origins = "*", allowedHeaders = "*", methods = RequestMethod.POST)
     @Operation(
-            summary = "Create a new user (Admin only)",
-            description = "Creates a new user account and sends an email with a registration link.",
-            responses = @ApiResponse(
-                    responseCode = "200",
-                    description = "User created successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = PreRegister.class))
-            )
+            summary = "Pre-register a new user (Admin only)",
+            description = "This endpoint allows an admin or supervisor to pre-register a new user account. " +
+                    "Upon successful registration, an email will be sent to the user with a registration link. " +
+                    "This registration link will allow the user to complete their account setup.",
+            parameters = {
+                    @Parameter(name = "request", description = "Pre-registration details including user information such as name, email, and role.", required = true,
+                            schema = @Schema(implementation = PreRegister.class))
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User  created successfully. An email with a registration link has been sent to the user.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PreRegisterCode.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid input. The request body is missing required fields or contains invalid data.",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Conflict. A user with the provided email already exists.",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal server error occurred while processing the request.",
+                            content = @Content(mediaType = "application/json")
+                    )
+            }
     )
     public ResponseEntity<PreRegisterCode> preRegister(@RequestBody PreRegister request) {
-        return ResponseEntity.ok(authenticationService.preRegistration(request));
+        PreRegisterCode preRegisterCode = authenticationService.preRegistration(request);
+        return ResponseEntity.ok(preRegisterCode);
     }
 
-    /**
-     * Authenticate a user.
-     *
-     * @param request The authentication request details (email and password).
-     * @return Response containing the authentication token.
-     */
+
+
     @PostMapping("/authenticate")
     @Operation(
             summary = "Authenticate a user",
-            description = "Authenticates a user by email and password, returning a JWT token upon success.",
-            responses = @ApiResponse(
-                    responseCode = "200",
-                    description = "User authenticated successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthenticationResponse.class))
-            )
+            description = "Authenticates a user using their email and password. " +
+                    "Upon successful authentication, a JWT token is returned, which can be used for subsequent requests to access protected resources.",
+            parameters = {
+                    @Parameter(name = "request", description = "Authentication request details including user's email and password.", required = true,
+                            schema = @Schema(implementation = AuthenticationRequest.class))
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User  authenticated successfully. A JWT token is returned.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthenticationResponse.class)),
+                            headers = @Header(name = "Authorization", description = "JWT token for authentication", required = true)
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "User  not found. The provided email is not registered.",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized. The email or password provided is incorrect.",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad Request. The request body is missing required fields or contains invalid data.",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal server error occurred while processing the request.",
+                            content = @Content(mediaType = "application/json")
+                    )
+            }
     )
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+        AuthenticationResponse authenticationResponse = authenticationService.authenticate(request);
+        return ResponseEntity.ok(authenticationResponse);
     }
 
-    /**
-     * Validate a pre-registration code.
-     *
-     * @param preRegisterCode The pre-registration code.
-     * @return Response containing the user information associated with the code.
-     */
-    @PostMapping("/preauthenticate")
-    @CrossOrigin(origins = "*", allowedHeaders = "*", methods = RequestMethod.POST)
-    @Operation(
-            summary = "Validate user activation code",
-            description = "Validates the activation code sent to the user during registration.",
-            responses = @ApiResponse(
-                    responseCode = "200",
-                    description = "Activation code is valid",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = PreRegister.class))
-            )
-    )
-    public ResponseEntity<PreRegister> preAuthenticate(@RequestBody PreRegisterCode preRegisterCode) {
-        return ResponseEntity.ok(authenticationService.validateCode(preRegisterCode));
-    }
-
-    /**
-     * Handle forgotten password requests.
-     *
-     * @param passwordRecoveryInfo The password recovery details.
-     * @return Response indicating success or failure of email lookup.
-     */
     @PostMapping("/forgetpassword")
     @CrossOrigin(origins = "*", allowedHeaders = "*", methods = RequestMethod.POST)
     @Operation(
-            summary = "Reset user password",
-            description = "Handles forgotten password requests and sends a reset link to the user's email.",
-            responses = @ApiResponse(
-                    responseCode = "200",
-                    description = "Password reset request processed",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = PasswordRecoveryInfo.class))
-            )
+            summary = "Handle forgotten password requests",
+            description = "Processes forgotten password requests by sending a password reset link to the user's registered email address. " +
+                    "If the email is found, a confirmation message is sent; otherwise, an error response is provided.",
+            parameters = {
+                    @Parameter(name = "passwordRecoveryInfo", description = "Details for password recovery, including the user's email address.", required = true,
+                            schema = @Schema(implementation = PasswordRecoveryInfo.class))
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Password reset request processed successfully. An email has been sent with instructions.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PasswordRecoveryInfo.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Email not found. No user associated with the provided email address.",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal server error occurred while processing the request.",
+                            content = @Content(mediaType = "application/json")
+                    )
+            }
     )
     public ResponseEntity<?> forgetPassword(@RequestBody PasswordRecoveryInfo passwordRecoveryInfo) {
         User user = authenticationService.passwordRecovery(passwordRecoveryInfo.getEmail());
-
         return ResponseEntity.ok(user);
     }
 
@@ -139,16 +200,40 @@ public class UserController {
     @CrossOrigin(origins = "*", allowedHeaders = "*", methods = RequestMethod.POST)
     @Operation(
             summary = "Reset user password",
-            description = "Handles password reset requests and updates the user's password.",
-            responses = @ApiResponse(
-                    responseCode = "200",
-                    description = "Password reset request processed",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = PasswordRecoveryInfo.class))
-            )
+            description = "Handles password reset requests by updating the user's password. " +
+                    "The user must provide a valid activation code and a new password to complete the reset process.",
+            parameters = {
+                    @Parameter(name = "passwordResetInfo", description = "Details for password reset including the reset token and new password.", required = true,
+                            schema = @Schema(implementation = PasswordResetInfo.class))
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Password reset successfully. The user's password has been updated.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PasswordResetInfo.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad Request. The request body is missing required fields or contains invalid data.",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found. The provided reset activation code is invalid or expired.",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal server error occurred while processing the request.",
+                            content = @Content(mediaType = "application/json")
+                    )
+            }
     )
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetInfo passwordResetInfo) {
         return ResponseEntity.ok(authenticationService.resetPassword(passwordResetInfo));
     }
+
+
 
     /**
      * Helper method to build a user from existing data and registration request.

@@ -1,7 +1,7 @@
 // @ts-ignore
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Create from '../src/components/Create';
+import Create from '../src/auth/Create';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 

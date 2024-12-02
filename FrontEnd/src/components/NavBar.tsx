@@ -1,15 +1,15 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
-import { _, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.svg";
-import isLogged from "../service/LoginState.tsx";
 import { CiLogin, CiLogout } from "react-icons/ci";
+import { useAtom } from "jotai";
+import loginAtom from "../service/LoginState.tsx";
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
   const navigate = useNavigate();
-  const [token, setToken] = useContext(isLogged);
-
+  const [token, setToken] = useAtom(loginAtom);
   const handleNav = () => {
     setNav(!nav);
   };
@@ -43,7 +43,7 @@ const Navbar = () => {
           <div className="relative">
             <li
               onClick={handleLogout}
-              className="p-4 hover:bg-[#ffc0cb] rounded-xl m-2 cursor-pointer duration-300 hover:text-black"
+              className="bg-blue-400 p-4 hover:bg-[#ffc0cb] rounded-xl m-2 cursor-pointer duration-300 hover:text-black"
             >
               Logout
             </li>

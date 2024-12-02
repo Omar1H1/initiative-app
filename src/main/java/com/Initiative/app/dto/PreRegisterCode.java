@@ -1,4 +1,4 @@
-package com.Initiative.app.auth;
+package com.Initiative.app.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
+@AllArgsConstructor
+public class PreRegisterCode {
 
-    private String token;
+    private String activationCode;
 }
