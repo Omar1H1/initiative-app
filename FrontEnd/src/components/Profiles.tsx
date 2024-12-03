@@ -61,7 +61,7 @@ const Profiles = () => {
 
   return (
     <div className="p-4 relative">
-      <h1 className="text-2xl font-bold mb-4 px-20">Profiles</h1>
+      <h1 className="text-2xl font-bold mb-4 px-20 flex items-center justify-center py-20">Profiles</h1>
       <div className="relative w-full max-w-full sm:max-w-2xl mx-auto mt-40 flex items-center justify-center">
         {profiles.map((profile, index) => (
           <div
