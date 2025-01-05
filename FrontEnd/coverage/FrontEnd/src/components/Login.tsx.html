@@ -296,7 +296,7 @@
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    try {</span>
 <span class="cstat-no" title="statement not covered" >      const response = await api.post('/api/v1/users/authenticate', data);</span>
-<span class="cstat-no" title="statement not covered" >      console.log('User has been created with success:', response.data);</span>
+<span class="cstat-no" title="statement not covered" >      ('User has been created with success:', response.data);</span>
 <span class="cstat-no" title="statement not covered" >      if(rememberMe) {</span>
 <span class="cstat-no" title="statement not covered" >        localStorage.setItem("token", response.data.token)</span>
 <span class="cstat-no" title="statement not covered" >        setToken(response.data.token)</span>

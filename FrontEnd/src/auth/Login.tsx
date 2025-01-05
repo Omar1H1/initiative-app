@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Axios } from "../service/Axios.tsx";
-import loginAtom from "../service/LoginState.tsx";
+import { Axios } from "../service/Axios";
+import loginAtom from "../service/LoginState";
 import { CgSpinnerAlt } from "react-icons/cg";
 import { useSetAtom } from "jotai";
-
+import { User } from "../types/User";
 import { FaEyeSlash, FaEye } from "react-icons/fa";
+import userAtom from "../service/UserAtom";
 
 const api = new Axios().getInstance();
 
@@ -16,21 +17,25 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const setToken = useSetAtom(loginAtom);
+  const setUser = useSetAtom(userAtom);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     setIsLoading(true);
 
-    const data = {
-      email,
-      password,
-    };
-
+    const data = { email, password };
     try {
       const response = await api.post("/api/v1/users/authenticate", data);
-      console.log("User has been created with success:", response.data);
+      const user: User = {
+        id: response.data.id,
+        username: response.data.username,
+        firstName: response.data.firstname,
+        lastName: response.data.lastname,
+        role: response.data.role,
+      };
+      setUser(user);
+      localStorage.setItem("user", JSON.stringify(user));
       if (rememberMe) {
         localStorage.setItem("token", response.data.token);
         setToken(response.data.token);
@@ -40,124 +45,88 @@ const Login = () => {
       }
       navigate("/");
     } catch (error) {
-      console.error("Error during creation:", error);
+      console.error("Error during login:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleContactCLick = () => {
-    navigate("/contact");
-  };
-
-  const handleShowPasswordToggle = () => {
-    setShowPassword((prev) => !prev);
-  };
-
-  const handleForgetPasswordClick = () => {
-    navigate("/passwordrecovery");
-  };
-
   return (
-    <>
-      <div className="bg-transparent h-screen flex items-center justify-center rounded-lg">
-        <div className="bg-transparent bg-gradient-to-r from-cyan-300 to-blue-100 w-4/12 shadow-md px-8 pt-6 pb-8 mb-4 rounded-lg bg-opacity-90 backdrop-filter backdrop-blur-lg backdrop-brightness-50">
-          <h2 className="text-sm font-bold mb-6 text-center sm:text-2xl">
+      <div className="bg-bkg h-screen flex flex-col items-center justify-center dark:bg-gray-900 rounded-lg dark:bg-opacity-90 shadow-1-lg">
+
+        <div className="w-full max-w-md bg-white shadow-md px-8 py-6 rounded-lg bg-opacity-90 backdrop-filter backdrop-blur-lg dark:bg-gray-800">
+          <h2 className="text-center text-2xl font-bold text-content dark:text-white">
             Login
           </h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label
-                htmlFor="email"
-                className="text-sm sm:block text-gray-700 sm:text-lg font-bold mb-2"
+                  htmlFor="email"
+                  className="block text-sm font-bold text-gray-700 mb-2 dark:text-gray-300"
               >
                 Email
               </label>
               <input
-                type="email"
-                id="email"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                  type="email"
+                  id="email"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-white"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
               />
             </div>
+
             <div className="mb-4">
               <label
-                htmlFor="password"
-                className="block text-gray-700 text-lg font-bold mb-2"
+                  htmlFor="password"
+                  className="block text-sm font-bold text-gray-700 mb-2 dark:text-gray-300"
               >
-                mot de passe
+                Password
               </label>
               <div className="relative">
                 <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline relative"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-white"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
-                  type="button"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                  onClick={handleShowPasswordToggle}
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-300"
+                    onClick={() => setShowPassword((prev) => !prev)}
                 >
                   {showPassword ? <FaEye /> : <FaEyeSlash />}
                 </button>
               </div>
             </div>
 
-            <div className="mb-4">
-              <label
-                htmlFor="rememberme"
-                className="block text-gray-700 text-lg font-bold mb-2"
-              >
-                <input
-                  className="text-sm"
+            <div className="mb-4 flex items-center">
+              <input
                   type="checkbox"
                   id="rememberme"
+                  className="mr-2"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                />
-
-                <span className="ml-2 text-sm">Souvenez-vous de moi</span>
+              />
+              <label
+                  htmlFor="rememberme"
+                  className="text-sm text-gray-700 dark:text-gray-300"
+              >
+                Remember Me
               </label>
             </div>
+
             <div className="mb-6">
               <button
-                type="submit"
-                className=" hover:animate-bounce flex items-center justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline 1   
-1.
-github.com
-github.com
- w-full"
+                  type="submit"
+                  className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-blue-300 flex justify-center items-center"
               >
-                {isLoading ? (
-                  <CgSpinnerAlt className="animate-spin h-6 w-6" />
-                ) : (
-                  "Login"
-                )}
-              </button>
-
-              <button className="py-2" onClick={handleForgetPasswordClick}>
-                <a className="py-2 hover:text-blue-700">
-                  {" "}
-                  • mot de passe oublié? cliquez ici
-                </a>
-              </button>
-              <p className="py-2">
-                • Vous n'avez pas encore vos identifiants ?
-              </p>
-              <button
-                onClick={handleContactCLick}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded focus:outline-none focus:shadow-outline "
-              >
-                Contactez nous
+                {isLoading ? <CgSpinnerAlt className="animate-spin h-6 w-6" /> : "Login"}
               </button>
             </div>
           </form>
         </div>
       </div>
-    </>
   );
 };
 

@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        --color-bkg: 210deg 40%, 98%;
+        --color-content: 217deg 32.6%, 17.5%;
+
+        --color-accent-1: 288deg 95.8%, 90.6%;
+        --color-accent-2: 0deg 83.8%, 78.2%;
+    }
+
+    [data-theme="dark"] {
+        --color-bkg: 217deg 32.6%, 17.5%;
+        --color-content: 210deg 40%, 98%;
+
+        --color-accent-1: 288deg 95.8%, 60.6%;
+        --color-accent-2: 0deg 83.8%, 48.2%;
+    }
+}

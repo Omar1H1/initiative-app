@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MatchRequest {
-    
-    private Long demanderId;
-    
+
     private Long receiverId;
 }

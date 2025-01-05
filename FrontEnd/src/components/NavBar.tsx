@@ -1,103 +1,137 @@
 import { useState } from "react";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.svg";
+import { IoNotifications } from "react-icons/io5";
 import { CiLogin, CiLogout } from "react-icons/ci";
-import { useAtom } from "jotai";
-import loginAtom from "../service/LoginState.tsx";
+import { useNavigate } from "react-router-dom";
+import { useAtom, useAtomValue } from "jotai";
+import loginAtom from "../service/LoginState";
+import userAtom from "../service/UserAtom";
+import ThemeToggle from "./ThemeToggle";
+import useNotifications from "../hooks/useNotifications";
+import logo from "../assets/logo.svg";
 
 const Navbar = () => {
-  const [nav, setNav] = useState(false);
-  const navigate = useNavigate();
-  const [token, setToken] = useAtom(loginAtom);
-  const handleNav = () => {
-    setNav(!nav);
-  };
+    const [nav, setNav] = useState(false);
+    const navigate = useNavigate();
+    const [token, setToken] = useAtom(loginAtom);
+    const user = useAtomValue(userAtom);
+    const notifications = useNotifications(user?.id ? String(user.id) : undefined);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("token");
-    setToken(null);
-    navigate("/");
-  };
+    const handleNavToggle = () => setNav((prevNav) => !prevNav);
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
+        setToken(null);
+        navigate("/");
+    };
 
-  const handleLogin = () => {
-    navigate("/login");
-  };
+    const handleNotificationClick = () => {
+        navigate("/natif");
+        setNav(false);
+    };
 
-  const handleLogoCLick = () => {
-    navigate("/");
-  };
+    const handleLogin = () => {
+        navigate("/login");
+        setNav(false);
+    };
 
-  return (
-    <div className="bg-transparent flex justify-between items-center h-24 max-w-[1240px] mx-auto px-4 text-white">
-      <button onClick={handleLogoCLick}>
-        <img
-          src={logo}
-          alt="logo"
-          className="w-48 h-auto bg-transparent rounded-lg"
-        />
-      </button>
-      {token ? (
-        <ul className="hidden md:flex">
-          <div className="relative">
-            <li
-              onClick={handleLogout}
-              className="bg-blue-400 p-4 hover:bg-[#ffc0cb] rounded-xl m-2 cursor-pointer duration-300 hover:text-black"
-            >
-              Logout
-            </li>
-            <CiLogout className="absolute size-6  ml-16 top-1/2 transform -translate-y-1/2" />
-          </div>
-        </ul>
-      ) : (
-        <ul className="hidden md:flex">
-          <div className="relative">
-            <li
-              onClick={handleLogin}
-              className="bg-blue-400 p-4 hover:bg-blue-700 rounded-xl m-2 cursor-pointer duration-300 hover:text-white w-20"
-            >
-              Login
-            </li>
-            <CiLogin className="absolute size-6  ml-16 top-1/2 transform -translate-y-1/2" />
-          </div>
-        </ul>
-      )}
-
-      <div onClick={handleNav} className="block md:hidden">
-        {nav ? <AiOutlineClose size={20} /> : <AiOutlineMenu size={20} />}
-      </div>
-
-      <ul
-        className={
-          nav
-            ? "fixed md:hidden left-0 top-0 w-[60%] h-full border-r border-r-gray-900 bg-[#000300] ease-in-out duration-500"
-            : "ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%]"
+    const renderNavItems = () => {
+        if (token) {
+            return (
+                <>
+                    {user?.role === "SUPERVISOR" || user?.role === "ADMIN" ? (
+                        <li
+                            onClick={() => {
+                                navigate("/panel");
+                                setNav(false);
+                            }}
+                            className="bg-blue-500 text-white p-4 hover:bg-blue-600 rounded-lg m-2 cursor-pointer"
+                        >
+                            Admin Panel
+                        </li>
+                    ) : null}
+                    <li
+                        onClick={handleLogout}
+                        className="bg-red-500 text-white p-4 hover:bg-red-600 rounded-lg m-2 cursor-pointer"
+                    >
+                        Logout
+                        <CiLogout className="inline-block ml-2" />
+                    </li>
+                </>
+            );
+        } else {
+            return (
+                <li
+                    onClick={handleLogin}
+                    className="bg-green-500 text-white p-4 hover:bg-green-600 rounded-lg m-2 cursor-pointer"
+                >
+                    Login
+                    <CiLogin className="inline-block ml-2" />
+                </li>
+            );
         }
-      >
-        <img
-          src={logo}
-          alt="Your Logo"
-          className="w-48 h-auto bg-transparent"
-        />
-        {token ? (
-          <li
-            onClick={handleLogout}
-            className="p-4 border-b rounded-xl hover:bg-[#ffc0cb] duration-300 hover:text-black cursor-pointer border-gray-600"
-          >
-            Logout
-          </li>
-        ) : (
-          <li
-            onClick={handleLogin}
-            className="p-4 border-b rounded-xl hover:bg-[#ffc0cb] duration-300 hover:text-black cursor-pointer border-gray-600"
-          >
-            Login
-          </li>
-        )}
-      </ul>
-    </div>
-  );
+    };
+
+    return (
+        <div className="bg-gray-800 fixed top-0 left-0 w-full z-50 flex justify-between items-center h-24 px-4 text-white shadow-md">
+            {/* Logo */}
+            <button onClick={() => navigate("/")}>
+                <img src={logo} alt="logo" className="w-48 h-auto rounded-lg" />
+            </button>
+
+            {/* Desktop Navigation */}
+            <ul className="hidden md:flex items-center">
+                {token && (
+                    <li onClick={handleNotificationClick} className="cursor-pointer mr-4 relative">
+                        <IoNotifications size={24} className="hover:bg-blue-400 hover:text-white rounded-full " />
+                        {notifications.length > 0 && (
+                            <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">
+                                {notifications.length}
+                            </span>
+                        )}
+                    </li>
+                )}
+                <li className="mr-4">
+                    <ThemeToggle />
+                </li>
+                {renderNavItems()}
+            </ul>
+
+            {/* Mobile Menu Icon */}
+            <div onClick={handleNavToggle} className="block md:hidden cursor-pointer">
+                {nav ? <AiOutlineClose size={24} /> : <AiOutlineMenu size={24} />}
+            </div>
+
+            {/* Mobile Navigation */}
+            <ul
+                className={`fixed top-0 left-0 w-[60%] h-full border-r border-gray-700 bg-gray-900 transform ${
+                    nav ? "translate-x-0" : "-translate-x-full"
+                } transition-transform duration-300 ease-in-out z-50 md:hidden`}
+            >
+                {/* Mobile Logo */}
+                <div className="p-4">
+                    <img src={logo} alt="Logo" className="w-32 h-auto mx-auto" />
+                </div>
+
+                {/* Mobile Navigation Items */}
+                {token && (
+                    <li className="m-4 cursor-pointer" onClick={handleNotificationClick}>
+                        <IoNotifications size={24} className="inline-block mr-2" />
+                        Notifications
+                        {notifications.length > 0 && (
+                            <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-1">
+                                {notifications.length}
+                            </span>
+                        )}
+                    </li>
+                )}
+                <li className="m-4">
+                    <ThemeToggle />
+                </li>
+                {renderNavItems()}
+            </ul>
+        </div>
+    );
 };
 
 export default Navbar;

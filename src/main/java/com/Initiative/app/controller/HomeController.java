@@ -27,7 +27,6 @@ public class HomeController {
 
 
     @GetMapping("/profiles")
-    @CrossOrigin(origins = "*", allowedHeaders = "*", methods = RequestMethod.GET)
     @Operation(
             summary = "Get profiles based on user role",
             description = "Retrieves a list of users based on the role of the authenticated user. "

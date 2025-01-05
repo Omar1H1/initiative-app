@@ -6,7 +6,9 @@ import loginAtom from "../service/LoginState.tsx";
 const Home = () => {
   const token = useAtomValue(loginAtom);
 
-  return <>{token ? <Profiles /> : <Hero />}</>;
+  return (<>
+    {token ? <Profiles /> : <Hero />}
+  </>);
 };
 
 export default Home;

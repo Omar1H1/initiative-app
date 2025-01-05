@@ -11,6 +11,10 @@ import PasswordRecovery from "./auth/PasswordRecovery.tsx";
 import ResetPassword from "./auth/ResetPassword.tsx";
 import Home from "./components/Home.tsx";
 import { useEffect } from "react";
+import AdminPanel from "./components/AdminPanel.tsx";
+import Signup from "./auth/Signup.tsx";
+import Notification from "./components/Notification.tsx";
+import {Toaster} from "react-hot-toast";
 
 const App = () => {
   const setToken = useSetAtom(loginAtom);
@@ -28,12 +32,17 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Create />} />
         <Route path="/" element={<Home />} />
+        <Route path="/natif" element={<Notification />} />
         <Route path="/signup/submitcode" element={<CodePage />} />
         <Route path="/contact" element={<ContactFrom />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/passwordrecovery" element={<PasswordRecovery />} />
         <Route path="/passwordreset" element={<ResetPassword />} />
+        <Route path="/panel" element={<AdminPanel />} />
+        <Route path="test" element={<Signup />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
+      <Toaster position="top-left" />
     </BrowserRouter>
   );
 };

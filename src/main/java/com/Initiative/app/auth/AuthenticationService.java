@@ -7,6 +7,7 @@ import com.Initiative.app.dto.*;
 import com.Initiative.app.model.User;
 import com.Initiative.app.service.MailSending;
 import com.Initiative.app.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,26 +29,34 @@ public class AuthenticationService {
     private final MailSending mailSending;
     private final AuthenticationManager authenticationManager;
 
+    @Transactional
     public AuthenticationResponse register(User request) {
-        var user = User.builder()
-                .id(request.getId())
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
-                .isActive(true)
-                .build();
+        User existingUser = repository.getUserByEmail(request.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+//        var user = User.builder()
+//                .id(existingUser.getId())
+//                .firstName(existingUser.getFirstName())
+//                .lastName(existingUser.getLastName())
+//                .username(request.getUsername())
+//                .email(request.getEmail())
+//                .password(passwordEncoder.encode(request.getPassword()))
+//                .role(existingUser.getRole())
+//                .isActive(true)
+//                .build();
+        existingUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        existingUser.setUsername(request.getUsername());
+        existingUser.setProfileImage(request.getProfileImage());
+        existingUser.setIsActive(true);
 
-        repository.createUser(user);
-        var jwtToken = jwtService.generateToken(user);
+        repository.createUser(existingUser);
+        var jwtToken = jwtService.generateToken(existingUser);
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
     }
 
+    @Transactional
     public PreRegisterCode preRegistration(PreRegister request) {
         var user = User.builder()
                 .firstName(request.getFirstName())
@@ -65,6 +74,7 @@ public class AuthenticationService {
                 .build();
     }
 
+    @Transactional
     public PreRegister validateCode(PreRegisterCode preRegisterCode) {
         log.info("Code is : {}", preRegisterCode.getActivationCode());
         Optional<User> user = repository.getUserByActivationCode(preRegisterCode.getActivationCode().trim());
@@ -112,7 +122,12 @@ public class AuthenticationService {
 
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
+                .id(user.getId())
                 .token(jwtToken)
+                .username(user.getUsername())
+                .firstname(user.getFirstName())
+                .lastname(user.getLastName())
+                .role(user.getRole())
                 .build();
     }
 

@@ -1,9 +1,6 @@
-import React from "react";
-
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Axios } from "../service/Axios.tsx";
-import { Profile } from "../service/Profiles.ts";
-import isLogged from "../service/LoginState.tsx";
+import { Profile } from "../types/Profiles.ts";
 import { FaHeart } from "react-icons/fa";
 import { IoCloseCircle } from "react-icons/io5";
 import { useAtomValue } from "jotai";
@@ -14,9 +11,9 @@ const api = new Axios().getInstance();
 const Profiles = () => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [likedProfiles, setLikedProfiles] = useState<Profile[]>([]);
-  const [dislikedProfiles, setDislikedProfiles] = useState<Profile[]>([]);
+  const [, setError] = useState<string | null>(null);
+  const [, setLikedProfiles] = useState<Profile[]>([]);
+  const [, setDislikedProfiles] = useState<Profile[]>([]);
 
   const token = useAtomValue(loginAtom);
 
@@ -45,11 +42,17 @@ const Profiles = () => {
     return <div>Loading...</div>;
   }
 
-  const handleLike = (profile: Profile) => {
+  const handleLike = async (profile: Profile) => {
     setLikedProfiles((prevLikes) => [...prevLikes, profile]);
     setProfiles((prevProfiles) =>
       prevProfiles.filter((p) => p.id !== profile.id),
     );
+    const matchRequest = {
+      receiverId: profile.id,
+    };
+
+    await api.post("/api/v1/match", matchRequest)
+
   };
 
   const handleDislike = (profile: Profile) => {

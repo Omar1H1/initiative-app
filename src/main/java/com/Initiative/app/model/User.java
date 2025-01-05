@@ -1,8 +1,11 @@
 package com.Initiative.app.model;
+
 import com.Initiative.app.enums.RoleEnum;
 import com.Initiative.app.enums.SectorsOfActivity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
-
 
 @Getter
 @NoArgsConstructor
@@ -35,7 +37,6 @@ public class User implements UserDetails {
 
     private String lastName;
 
-    @Column(unique = true)
     private String email;
 
     private String password;
@@ -46,21 +47,20 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
 
-
     @Column(unique = true)
     private String activationCode;
-    
+
     @Setter(AccessLevel.NONE)
     private LocalDateTime activationCodeExpiryDate;
-    
+
     private Boolean isActive;
 
     @OneToMany
+    @JsonIgnore
     private List<Match> matchList;
 
-
-
-
+    @Lob
+    private byte[] profileImage;
 
     @PrePersist
     public void autoGenerateActivationCode() {
@@ -71,9 +71,6 @@ public class User implements UserDetails {
             this.activationCodeExpiryDate = LocalDateTime.now().plusYears(3);
         }
     }
-    
-
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

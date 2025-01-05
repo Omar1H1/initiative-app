@@ -24,6 +24,7 @@ public class MatchingController {
 
     private final MatchingService matchingService;
     private final UserService userService;
+    private final NotificationController notificationController;
 
     /**
      * Handles a match request.
@@ -89,7 +90,8 @@ public class MatchingController {
             }
     )
     public ResponseEntity<Match> matchRequest(@RequestBody MatchRequest matchRequest, Authentication auth) {
-        User user = (User ) auth.getDetails();
+//        User user = (User ) auth.getDetails();
+        User user = (User) auth.getPrincipal();
         User demander = userService.getUserById(user.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Demander not found"));
         User receiver = userService.getUserById(matchRequest.getReceiverId())
@@ -100,5 +102,9 @@ public class MatchingController {
                 .receiver(receiver)
                 .build();
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(matchingService.createMatch(match));    }
+        Match createdMatch = matchingService.createMatch(match);
+        notificationController.sendMatchNotification(createdMatch);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdMatch);
+    }
+
 }

@@ -59,6 +59,22 @@ public class UserService {
         return userRepository.findByActivationCode(activationCode);
 
     }
+    public User prepareUserForRegistration(User request, byte[] profileImage) {
+        if (profileImage == null || profileImage.length == 0) {
+            throw new IllegalArgumentException("Profile image must not be empty.");
+        }
+
+        return User.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .role(request.getRole())
+                .isActive(true)
+                .profileImage(profileImage)
+                .build();
+    }
 
 
     public List<UserDTO> getUsersByRole(RoleEnum role) {
