@@ -5,7 +5,7 @@ const NotificationItem: React.FC<{ title: string; info: string }> = ({ title, in
 
     return (
         <div
-            className="flex items-start space-x-4 rounded-md p-2 hover:bg-zinc-800 hover:text-accent-foreground cursor-pointer relative bg-white dark:bg-gray-800 shadow-md"
+            className="flex items-start space-x-4 rounded-md p-2 hover:text-accent-foreground cursor-pointer relative bg-white dark:bg-gray-800 shadow-md"
             onClick={() => setRead(true)}
         >
             <div className="space-y-1">

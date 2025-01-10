@@ -26,7 +26,7 @@ const Notification = () => {
     console.log("Fetched notifications:", notifications);
 
     return (
-        <div className="p-6 pt-28 bg-gray-100 dark:bg-gray-900 min-h-screen">
+        <div className="p-6 pt-28 bg-white dark:bg-gray-800  min-h-screen">
             <h2 className="text-lg font-bold mb-4 text-gray-800 dark:text-white">
                 Notifications
             </h2>
