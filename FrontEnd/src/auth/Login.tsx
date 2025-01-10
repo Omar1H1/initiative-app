@@ -51,6 +51,16 @@ const Login = () => {
     }
   };
 
+  const handleContactCLick = () => {
+    navigate("/contact");
+  };
+
+
+
+  const handleForgetPasswordClick = () => {
+    navigate("/passwordrecovery");
+  };
+
   return (
       <div className="bg-bkg h-screen flex flex-col items-center justify-center dark:bg-gray-900 rounded-lg dark:bg-opacity-90 shadow-1-lg">
 
@@ -122,6 +132,30 @@ const Login = () => {
                   className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-blue-300 flex justify-center items-center"
               >
                 {isLoading ? <CgSpinnerAlt className="animate-spin h-6 w-6" /> : "Login"}
+              </button>
+            </div>
+            {/* Forget Password */}
+            <div className="text-center mb-4">
+              <button
+                  type="button"
+                  onClick={handleForgetPasswordClick}
+                  className="text-sm sm:text-base text-blue-500 hover:text-blue-700"
+              >
+                Mot de passe oublié? Cliquez ici
+              </button>
+            </div>
+
+            {/* Contact Button */}
+            <p className="text-center text-sm sm:text-base text-gray-700 mb-2 dark:text-white">
+              Vous n'avez pas encore vos identifiants ?
+            </p>
+            <div className="text-center">
+              <button
+                  type="button"
+                  onClick={handleContactCLick}
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              >
+                Contactez-nous
               </button>
             </div>
           </form>

@@ -41,15 +41,15 @@ const CodePage = () => {
     };
 
     return (
-        <div className="bg-gradient-to-b from-[#360033] to-[#0b8793] min-h-screen flex items-center justify-center px-4 py-8">
+        <div className="dark:bg-gray-800 bg-bkg min-h-screen flex items-center justify-center px-4 py-8">
             {!validCode ? (
-                <div className="w-full max-w-md bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg rounded-lg shadow-lg p-8">
-                    <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-6 text-center">
+                <div className="w-full max-w-md bg-white dark:bg-gray-800 bg-opacity-90 backdrop-filter backdrop-blur-lg rounded-lg shadow-lg p-8">
+                    <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-6 text-center dark:text-white">
                         Saisissez votre code
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <label htmlFor="code" className="block text-gray-700 font-bold mb-2">
+                            <label htmlFor="code" className="block text-gray-700 font-bold mb-2 dark:text-white">
                                 Code
                             </label>
                             <input

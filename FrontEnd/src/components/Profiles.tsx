@@ -10,10 +10,11 @@ const api = new Axios().getInstance();
 
 const Profiles = () => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [, setIsLoading] = useState<boolean>(false);
   const [, setError] = useState<string | null>(null);
   const [, setLikedProfiles] = useState<Profile[]>([]);
   const [, setDislikedProfiles] = useState<Profile[]>([]);
+  const [photos, setPhotos] = useState<{ [key: number]: string }>({});
 
   const token = useAtomValue(loginAtom);
 
@@ -32,15 +33,32 @@ const Profiles = () => {
     }
   };
 
+  const fetchProfilePhoto = async (id: number) => {
+    try {
+      const response = await api.get(`/api/v1/users/${id}/profile-image`, { responseType: "blob" });
+      const imageUrl = URL.createObjectURL(response.data);
+
+      setPhotos((prevPhotos) => ({ ...prevPhotos, [id]: imageUrl }));
+    } catch (err) {
+      console.error("Error fetching profile image:", err);
+    }
+  };
+
+
   useEffect(() => {
     if (token && !profiles.length) {
       fetchProfiles();
     }
   }, [token, profiles.length]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    if (profiles.length) {
+      profiles.forEach((profile) => {
+        fetchProfilePhoto(profile.id);
+      });
+    }
+  }, [profiles]);
+
 
   const handleLike = async (profile: Profile) => {
     setLikedProfiles((prevLikes) => [...prevLikes, profile]);
@@ -51,8 +69,7 @@ const Profiles = () => {
       receiverId: profile.id,
     };
 
-    await api.post("/api/v1/match", matchRequest)
-
+    await api.post("/api/v1/match", matchRequest);
   };
 
   const handleDislike = (profile: Profile) => {
@@ -62,27 +79,34 @@ const Profiles = () => {
     );
   };
 
+  // @ts-ignore
   return (
-    <div className="p-4 relative">
-      <h1 className="text-2xl font-bold mb-4 px-20 flex items-center justify-center py-20">Profiles</h1>
+    <div className="p-4 relative dark:bg-gray-900 h-screen">
+      <h1 className="text-2xl font-bold mb-4 px-20 flex items-center justify-center py-20 text-gray-800 dark:text-white">
+        Profiles
+      </h1>
       <div className="relative w-full max-w-full sm:max-w-2xl mx-auto mt-40 flex items-center justify-center">
         {profiles.map((profile, index) => (
           <div
             key={profile.id}
-            className={`absolute w-full sm:w-[90%] md:w-[70%] p-6 bg-white rounded-xl shadow-2xl transform transition-all duration-300 ease-in-out ${index === profiles.length - 1 ? "scale-100 z-10" : "scale-90 z-0"
+            className={`absolute w-full sm:w-[90%] md:w-[70%] p-6 bg-white rounded-xl shadow-2xl transform transition-all duration-300 ease-in-out dark:bg-gray-800 ${index === profiles.length - 1 ? "scale-100 z-10" : "scale-90 z-0"
               }`}
           >
             <img
-              src={"https://via.placeholder.com/150"}
-              alt={`${profile.firstName} ${profile.lastName}`}
-              className="w-full h-48 object-cover rounded-lg"
+                src={photos[profile.id] ?? "https://via.placeholder.com/150"}
+                alt={`${profile.firstName} ${profile.lastName}`}
+                className="w-full h-48 object-fill rounded-lg"
             />
             <div className="mt-4">
-              <h2 className="text-2xl font-semibold">
+              <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
                 {profile.firstName} {profile.lastName}
               </h2>
-              <p className="text-gray-600">{profile.username}</p>
-              <p className="text-gray-500">{profile.email}</p>
+              <p className="text-gray-600 dark:text-gray-300">
+                {profile.username}
+              </p>
+              <p className="text-gray-500 dark:text-gray-400">
+                {profile.email}
+              </p>
             </div>
             <div className="mt-4 flex justify-between">
               <button

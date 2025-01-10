@@ -2,17 +2,19 @@ package com.Initiative.app.dto;
 
 import com.Initiative.app.model.Match;
 import com.Initiative.app.model.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.Lob;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 
+import java.sql.Types;
 import java.util.List;
 
-@Data
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class UserDTO {
 
     private Long id;
@@ -24,6 +26,7 @@ public class UserDTO {
     private String lastName;
 
     private String email;
+
 
     private List<Match> matchList;
 

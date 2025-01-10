@@ -27,18 +27,19 @@ const ContactFrom = () => {
     }
   };
 
+  // @ts-ignore
   return (
     <>
       <div className="bg-transparent h-screen flex items-center justify-center rounded-lg">
-        <div className="bg-transparent bg-gradient-to-r from-cyan-300 to-blue-100 w-4/12 shadow-md px-8 pt-6 pb-8 mb-4 rounded-lg bg-opacity-90 backdrop-filter backdrop-blur-lg backdrop-brightness-50">
-          <h2 className="text-2xl font-bold mb-6 text-center">
+        <div className="dark:bg-gray-800 bg-white w-4/12 shadow-md px-8 pt-6 pb-8 mb-4 rounded-lg bg-opacity-90 backdrop-filter backdrop-blur-lg backdrop-brightness-50">
+          <h2 className="text-2xl font-bold mb-6 text-center dark:text-white">
             Contactez-nous
           </h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label
                 htmlFor="firstName"
-                className="block text-gray-700 text-lg font-bold mb-2"
+                className="block text-gray-700 text-lg font-bold mb-2 dark:text-white"
               >
                 Prénom
               </label>
@@ -53,7 +54,7 @@ const ContactFrom = () => {
             <div className="mb-4">
               <label
                 htmlFor="lastName"
-                className="block text-gray-700 text-lg font-bold mb-2"
+                className="block text-gray-700 text-lg font-bold mb-2 dark:text-white"
               >
                 Nom
               </label>
@@ -68,7 +69,7 @@ const ContactFrom = () => {
             <div className="mb-4">
               <label
                 htmlFor="email"
-                className="block text-gray-700 text-lg font-bold mb-2"
+                className="block text-gray-700 text-lg font-bold mb-2 dark:text-white"
               >
                 Email
               </label>
@@ -83,12 +84,12 @@ const ContactFrom = () => {
             <div className="mb-4">
               <label
                 htmlFor="textarea"
-                className="block text-gray-700 text-sm font-bold mb-2"
+                className="block text-gray-700 text-sm font-bold mb-2 dark:text-white"
               >
                 Pouvez vous dans 250 caracteres expliquer votre projet
               </label>
               <textarea
-                className="lg:max-w-full sm:w-fit sm:max-w-[270px] rounded-lg shadow-md border border-gray-300 p-2 w-fit"
+                className="lg:max-w-full sm:w-fit sm:max-w-[270px] rounded-lg shadow-md border border-gray-300 p-2 w-fit text-black"
                 id="text-area"
                 rows="4"
                 cols="50"

@@ -3,7 +3,7 @@ package com.Initiative.app;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.Initiative.app")
 public class
 Application {
 
