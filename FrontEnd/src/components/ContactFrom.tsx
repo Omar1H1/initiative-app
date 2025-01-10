@@ -30,8 +30,8 @@ const ContactFrom = () => {
   // @ts-ignore
   return (
     <>
-      <div className="bg-transparent h-screen flex items-center justify-center rounded-lg">
-        <div className="dark:bg-gray-800 bg-white w-4/12 shadow-md px-8 pt-6 pb-8 mb-4 rounded-lg bg-opacity-90 backdrop-filter backdrop-blur-lg backdrop-brightness-50">
+      <div className="bg-transparent h-screen flex items-center justify-center rounded-lg overflow-hidden">
+        <div className="dark:bg-gray-800 bg-white w-11/12 sm:w-4/12 shadow-md px-8 pt-6 pb-8 mb-4 rounded-lg bg-opacity-90 backdrop-filter backdrop-blur-lg backdrop-brightness-50 overflow-hidden">
           <h2 className="text-2xl font-bold mb-6 text-center dark:text-white">
             Contactez-nous
           </h2>
@@ -88,15 +88,16 @@ const ContactFrom = () => {
               >
                 Pouvez vous dans 250 caracteres expliquer votre projet
               </label>
-              <textarea
-                className="lg:max-w-full sm:w-fit sm:max-w-[270px] rounded-lg shadow-md border border-gray-300 p-2 w-fit text-black"
-                id="text-area"
+              <div className="lg:max-w-full sm:w-full sm:max-w-[170px] rounded-lg shadow-md border border-gray-300 p-2 w-full text-black">
+       <textarea
+      className="w-full h-32 p-2 border border-gray-400 rounded-lg resize-none"                id="text-area"
                 rows="4"
                 cols="50"
                 maxLength="280"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-              ></textarea>
+               ></textarea>
+              </div>
             </div>
 
             <div className="mb-6">
