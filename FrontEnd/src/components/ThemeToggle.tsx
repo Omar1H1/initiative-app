@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { useAtom } from "jotai";
 import themeAtom from "../service/ThemeAtom";
-import { MdDarkMode } from "react-icons/md";
 import { CiLight } from "react-icons/ci";
+import { FaMoon } from "react-icons/fa";
+
 
 
 const ThemeToggle = () => {
@@ -41,8 +42,8 @@ const ThemeToggle = () => {
                     className="text-4xl duration-500 ease-in-out hover:bg-yellow-500 rounded-lg"
                 />
             ) : (
-                <MdDarkMode
-                    className="text-4xl transition duration-500 ease-in-out hover:bg-black rounded-lg"
+                <FaMoon
+                    className="text-gray-900 p-2 text-4xl transition duration-500 ease-in-out  rounded-lg"
                 />
             )}
         </button>

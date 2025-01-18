@@ -56,7 +56,7 @@ const Navbar = () => {
             onClick={handleLogout}
             className="bg-red-500 text-white p-4 hover:bg-red-600 rounded-lg m-2 cursor-pointer"
           >
-            Logout
+            Déconnexion
             <CiLogout className="inline-block ml-2" />
           </li>
         </>
@@ -65,9 +65,9 @@ const Navbar = () => {
       return (
         <li
           onClick={handleLogin}
-          className="bg-green-500 text-white p-4 hover:bg-green-600 rounded-lg m-2 cursor-pointer"
+          className="bg-green-500 text-white p-4 hover:bg-green-600 rounded-lg m-2 cursor-pointer font-bold"
         >
-          Login
+          Se Connecter
           <CiLogin className="inline-block ml-2" />
         </li>
       );
@@ -75,7 +75,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="bg-gray-800 fixed top-0 left-0 w-full z-50 flex justify-between items-center h-24 px-4 text-white shadow-md">
+    <div className="bg-white dark:bg-gray-800 fixed top-0 left-0 w-full z-50 flex justify-between items-center h-24 px-4 text-white shadow-md">
       {/* Logo */}
       <button onClick={() => navigate("/")}>
         <img src={logo} alt="logo" className="w-48 h-auto rounded-lg" />
@@ -116,13 +116,13 @@ const Navbar = () => {
       </ul>
 
       {/* Mobile Menu Icon */}
-      <div onClick={handleNavToggle} className="block md:hidden cursor-pointer">
+      <div onClick={handleNavToggle} className="block md:hidden cursor-pointer text-black dark:text-gray-200">
         {nav ? <AiOutlineClose size={24} /> : <AiOutlineMenu size={24} />}
       </div>
 
       {/* Mobile Navigation */}
       <ul
-        className={`fixed top-0 left-0 w-[60%] h-full border-r border-gray-700 bg-gray-900 transform ${nav ? "translate-x-0" : "-translate-x-full"
+        className={`fixed top-0 left-0 w-[60%] h-full border-r border-gray-700 bg-white dark:bg-gray-900 transform ${nav ? "translate-x-0" : "-translate-x-full"
           } transition-transform duration-300 ease-in-out z-50 md:hidden`}
       >
         {/* Mobile Logo */}
