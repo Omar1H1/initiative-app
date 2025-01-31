@@ -1,6 +1,7 @@
 package com.Initiative.app.controller;
 
 import com.Initiative.app.auth.*;
+import com.Initiative.app.config.core.JwtService;
 import com.Initiative.app.dto.*;
 import com.Initiative.app.model.User;
 import com.Initiative.app.service.UserService;
@@ -38,7 +39,52 @@ public class UserController {
 
     private final AuthenticationService authenticationService;
     private final UserService userService;
+    private final JwtService jwtService;
 
+
+    @GetMapping("/me")
+    @Operation(
+            summary = "Get current user information",
+            description = "Fetches the current user's information using the provided JWT token.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "User  information retrieved successfully.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized. The token is invalid or expired.",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "User  not found.",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal server error occurred while processing the request.",
+                            content = @Content(mediaType = "application/json")
+                    )
+            }
+    )
+    public ResponseEntity<User> getCurrentUser (@RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String token = authHeader.substring(7);
+        String username = jwtService.extractUsername(token);
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Optional<User> userOptional = userService.getUserByUsername(username);
+        return userOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+
+    }
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
@@ -149,6 +195,7 @@ public class UserController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .body(profileImage);
     }
+
 
 
 

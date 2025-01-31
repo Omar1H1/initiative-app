@@ -36,6 +36,7 @@ const Login = () => {
         lastName: response.data.lastname,
         role: response.data.role,
       };
+      console.log(user);
       setUser(user);
       localStorage.setItem("user", JSON.stringify(user));
       if (rememberMe) {

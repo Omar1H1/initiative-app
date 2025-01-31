@@ -28,8 +28,8 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.addAllowedOrigin("http://localhost:5173");
-        configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedOrigin("http://localhost:5173"); // Allow your frontend origin
+        configuration.addAllowedOrigin("http://localhost:3000"); // If you have another frontend
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
 
@@ -48,6 +48,8 @@ public class SecurityConfiguration {
 
                 .authorizeHttpRequests(authorize -> authorize
 
+
+                        .requestMatchers("/ws/**").permitAll() // Allow access to WebSocket endpoint
                         .requestMatchers("/api/v1/demo/public").permitAll()
                         .requestMatchers("/api-docs").permitAll()
                         .requestMatchers("/docs").permitAll()

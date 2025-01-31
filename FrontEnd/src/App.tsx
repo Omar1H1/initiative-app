@@ -15,6 +15,7 @@ import AdminPanel from "./components/AdminPanel.tsx";
 import Signup from "./auth/Signup.tsx";
 import Notification from "./components/Notification.tsx";
 import {Toaster} from "react-hot-toast";
+import ChatContainer from "./components/ChatContainer.tsx";
 
 const App = () => {
   const setToken = useSetAtom(loginAtom);
@@ -40,6 +41,7 @@ const App = () => {
         <Route path="/passwordreset" element={<ResetPassword />} />
         <Route path="/panel" element={<AdminPanel />} />
         <Route path="test" element={<Signup />} />
+        <Route path="chat" element={<ChatContainer />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster position="top-left" />
