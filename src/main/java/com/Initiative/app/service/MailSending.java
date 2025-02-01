@@ -1,25 +1,33 @@
- package com.Initiative.app.service;
+package com.Initiative.app.service;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class MailSending {
 
+    private final JavaMailSender emailSender;
 
-        private final JavaMailSender emailSender;
+    public void sendEmail(String toEmail, String subject, String body) {
+        try {
+            MimeMessage message = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-        public void sendEmail(String toEmail, String subject, String body) {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("omerhamad1o1@gmail.com");
-            message.setTo(toEmail);
-            message.setSubject(subject);
-            message.setText(body);
+            helper.setFrom("omerhamad1o1@gmail.com");
+            helper.setTo(toEmail);
+            helper.setSubject(subject);
+            helper.setText(body, true);
 
             emailSender.send(message);
 
-            System.out.println("Message sent successfully");
+            System.out.println("HTML email sent successfully");
+        } catch (MessagingException e) {
+            System.err.println("Error sending email: " + e.getMessage());
         }
+    }
 }
