@@ -1,10 +1,38 @@
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { Axios } from "../service/Axios.tsx";
 
-const CustomToast = (title: string, message: string) => {
-    toast.custom((t) => (
+const api = new Axios().getInstance();
+
+interface CustomToastProps {
+    title: string;
+    message: string;
+    userId: number;
+    t: any; // `t` is the toast instance
+}
+
+const CustomToast = ({ title, message, userId, t }: CustomToastProps) => {
+    const [photo, setPhoto] = useState<string>("");
+
+    useEffect(() => {
+        const fetchProfilePhoto = async () => {
+            try {
+                const response = await api.get(`/api/v1/users/${userId}/profile-image`, { responseType: "blob" });
+                const imageUrl = URL.createObjectURL(response.data);
+                setPhoto(imageUrl);
+            } catch (err) {
+                console.error("Error fetching profile image:", err);
+                setPhoto("https://via.placeholder.com/150"); // Fallback image
+            }
+        };
+
+        fetchProfilePhoto();
+    }, [userId]);
+
+    return (
         <div
             className={`${
-                t.visible ? 'animate-enter' : 'animate-leave'
+                t.visible ? "animate-enter" : "animate-leave"
             } max-w-md w-full bg-white dark:bg-gray-900 shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 dark:ring-opacity-50`}
         >
             <div className="flex-1 w-0 p-4">
@@ -12,8 +40,8 @@ const CustomToast = (title: string, message: string) => {
                     <div className="flex-shrink-0 pt-0.5">
                         <img
                             className="h-10 w-10 rounded-full"
-                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=6GHAjsWpt9&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
-                            alt=""
+                            src={photo}
+                            alt="Profile"
                         />
                     </div>
                     <div className="ml-3 flex-1">
@@ -31,7 +59,12 @@ const CustomToast = (title: string, message: string) => {
                 </button>
             </div>
         </div>
-    ));
+    );
+};
+
+// ✅ Create a function to trigger the toast
+export const showCustomToast = (title: string, message: string, userId: number) => {
+    toast.custom((t) => <CustomToast title={title} message={message} userId={userId} t={t} />);
 };
 
 export default CustomToast;

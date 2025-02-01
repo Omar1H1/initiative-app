@@ -5,7 +5,7 @@ import userAtom from "../service/UserAtom";
 
 const Notification = () => {
     const user = useAtomValue(userAtom);
-    const notifications = useNotifications(user?.id ? String(user.id) : undefined);
+    const { notifications, markAsRead } = useNotifications(user?.id ? String(user.id) : undefined);
 
     if (!user?.id) {
         return (
@@ -26,7 +26,7 @@ const Notification = () => {
     console.log("Fetched notifications:", notifications);
 
     return (
-        <div className="p-6 pt-28 bg-white dark:bg-gray-800  min-h-screen">
+        <div className="p-6 pt-28 bg-white dark:bg-gray-800 min-h-screen">
             <h2 className="text-lg font-bold mb-4 text-gray-800 dark:text-white">
                 Notifications
             </h2>
@@ -37,6 +37,8 @@ const Notification = () => {
                             key={notification.id}
                             title={notification.title}
                             info={notification.info}
+                            seen={notification.seen}
+                            onClick={() => markAsRead(notification.id)}
                         />
                     ))}
                 </div>

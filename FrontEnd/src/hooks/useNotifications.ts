@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import CustomToast from "../components/CustomToast.tsx";
+import { showCustomToast } from "../components/CustomToast.tsx";
 
-// Define the notification type
 type Notification = {
   id: number;
   title: string;
   info: string;
+  userId: number;
   seen: boolean;
 };
 
@@ -13,14 +13,11 @@ const useNotifications = (userId: string | undefined) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
-    if (!userId) {
-      console.error("No user ID provided to fetch notifications.");
-      return;
-    }
+    if (!userId) return;
 
     console.log(`Subscribing to notifications for user ID: ${userId}`);
     const eventSource = new EventSource(
-      `http://localhost:8080/api/v1/notifications/match?userId=${userId}`,
+        `http://localhost:8080/api/v1/notifications/match?userId=${userId}`,
     );
 
     eventSource.onmessage = (event) => {
@@ -28,19 +25,24 @@ const useNotifications = (userId: string | undefined) => {
       try {
         const match = JSON.parse(event.data);
         const newNotification: Notification = {
-          id: Date.now(),
+          id: match.id,
           title: "New match request",
           info: `New match request from ${match.demander.username}`,
+          userId: match.demander.id,
           seen: false,
         };
 
         setNotifications((prev) => {
-          const updated = [newNotification, ...prev];
+          const existingNotifs = new Map(prev.map((n) => [n.id, n]));
+          existingNotifs.set(newNotification.id, newNotification);
+
+          const updated = Array.from(existingNotifs.values());
           localStorage.setItem("notifications", JSON.stringify(updated));
+
           return updated;
         });
 
-        CustomToast(newNotification.title, newNotification.info);
+        showCustomToast(newNotification.title, newNotification.info, newNotification.userId);
       } catch (error) {
         console.error("Error parsing notification event:", error);
       }
@@ -51,10 +53,7 @@ const useNotifications = (userId: string | undefined) => {
       eventSource.close();
     };
 
-    return () => {
-      console.log("Closing EventSource for notifications.");
-      eventSource.close();
-    };
+    return () => eventSource.close();
   }, [userId]);
 
   useEffect(() => {
@@ -64,7 +63,17 @@ const useNotifications = (userId: string | undefined) => {
     }
   }, []);
 
-  return notifications;
+  const markAsRead = (id: number) => {
+    setNotifications((prev) => {
+      const updated = prev.map((n) =>
+          n.id === id ? { ...n, seen: true } : n
+      );
+      localStorage.setItem("notifications", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  return { notifications, markAsRead };
 };
 
 export default useNotifications;
