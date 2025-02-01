@@ -67,9 +67,75 @@ public class AuthenticationService {
 
         repository.createUser(user);
 
-        mailSending.sendEmail(user.getEmail(), "Activation code", "Hello " + user.getFirstName() + " click on this url to active your account " + "http://localhost:5173/signup/submitcode?code="  + user.getActivationCode());
+        String emailContent = "<!DOCTYPE html>" +
+                "<html>" +
+                "<head>" +
+                "    <meta charset='UTF-8'>" +
+                "    <style>" +
+                "        body { " +
+                "            font-family: Arial, sans-serif; " +
+                "            background-color: #e7f3ff; /* Light blue background */" +
+                "            margin: 0; " +
+                "            padding: 0; " +
+                "        }" +
+                "        .container { " +
+                "            max-width: 600px; " +
+                "            background: #ffffff; " +
+                "            margin: 20px auto; " +
+                "            padding: 20px; " +
+                "            border-radius: 10px; " +
+                "            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); " +
+                "        }" +
+                "        .header { " +
+                "            background: #007BFF; /* Blue header */" +
+                "            padding: 20px; " +
+                "            text-align: center; " +
+                "            color: #ffffff; " +
+                "            font-size: 24px; " +
+                "            border-top-left-radius: 10px; " +
+                "            border-top-right-radius: 10px; " +
+                "        }" +
+                "        .content { " +
+                "            padding: 20px; " +
+                "            text-align: center; " +
+                "            font-size: 16px; " +
+                "            color: #333333; " +
+                "        }" +
+                "        .btn { " +
+                "            display: inline-block; " +
+                "            background: #0056b3; " +
+                "            color: #ffffff; " +
+                "            padding: 12px 20px; " +
+                "            text-decoration: none; " +
+                "            font-size: 18px; " +
+                "            border-radius: 5px; " +
+                "            margin-top: 20px; " +
+                "        }" +
+                "        .footer { " +
+                "            text-align: center; " +
+                "            padding: 15px; " +
+                "            font-size: 14px; " +
+                "            color: #777777; " +
+                "        }" +
+                "    </style>" +
+                "</head>" +
+                "<body>" +
+                "    <div class='container'>" +
+                "        <div class='header'>Bienvenue chez Initiative</div>" +
+                "        <div class='content'>" +
+                "            <p>Bonjour <strong>" + user.getFirstName() + "</strong>,</p>" +
+                "            <p>Nous sommes ravis de vous accueillir ! Cliquez sur le bouton ci-dessous pour activer votre compte :</p>" +
+                "            <a href='http://localhost:5173/signup/submitcode?code=" + user.getActivationCode() + "' class='btn'>Activer mon compte</a>" +
+                "            <p>Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet e-mail en toute sécurité.</p>" +
+                "        </div>" +
+                "        <div class='footer'>© 2024 Initiative. Tous droits réservés.</div>" +
+                "    </div>" +
+                "</body>" +
+                "</html>";
 
-        return  PreRegisterCode.builder()
+        mailSending.sendEmail(user.getEmail(), "Activer votre compte", emailContent);
+
+        return PreRegisterCode.builder()
                 .activationCode(user.getActivationCode())
                 .build();
     }
@@ -87,11 +153,79 @@ public class AuthenticationService {
                 .build();
     }
 
-    public User passwordRecovery(String  email) {
+    public User passwordRecovery(String email) {
         User user = repository.getUserByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
+
         user.autoGenerateActivationCode();
-        mailSending.sendEmail(user.getEmail(), "Password recovery", "Hello " + user.getFirstName() + " click on this url to reset your account password " + "http://localhost:5173/passwordreset/submitcode?code="  + user.getActivationCode());
+
+        String emailContent = "<!DOCTYPE html>" +
+                "<html>" +
+                "<head>" +
+                "    <meta charset='UTF-8'>" +
+                "    <style>" +
+                "        body { " +
+                "            font-family: Arial, sans-serif; " +
+                "            background-color: #e7f3ff;" +
+                "            margin: 0; " +
+                "            padding: 0; " +
+                "        }" +
+                "        .container { " +
+                "            max-width: 600px; " +
+                "            background: #ffffff; " +
+                "            margin: 20px auto; " +
+                "            padding: 20px; " +
+                "            border-radius: 10px; " +
+                "            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); " +
+                "        }" +
+                "        .header { " +
+                "            background: #007BFF;" +
+                "            padding: 20px; " +
+                "            text-align: center; " +
+                "            color: #ffffff; " +
+                "            font-size: 24px; " +
+                "            border-top-left-radius: 10px; " +
+                "            border-top-right-radius: 10px; " +
+                "        }" +
+                "        .content { " +
+                "            padding: 20px; " +
+                "            text-align: center; " +
+                "            font-size: 16px; " +
+                "            color: #333333; " +
+                "        }" +
+                "        .btn { " +
+                "            display: inline-block; " +
+                "            background: #0056b3; " +
+                "            color: #ffffff; " +
+                "            padding: 12px 20px; " +
+                "            text-decoration: none; " +
+                "            font-size: 18px; " +
+                "            border-radius: 5px; " +
+                "            margin-top: 20px; " +
+                "        }" +
+                "        .footer { " +
+                "            text-align: center; " +
+                "            padding: 15px; " +
+                "            font-size: 14px; " +
+                "            color: #777777; " +
+                "        }" +
+                "    </style>" +
+                "</head>" +
+                "<body>" +
+                "    <div class='container'>" +
+                "        <div class='header'>Récupération de Mot de Passe</div>" +
+                "        <div class='content'>" +
+                "            <p>Bonjour <strong>" + user.getFirstName() + "</strong>,</p>" +
+                "            <p>Nous avons reçu une demande pour réinitialiser votre mot de passe. Cliquez sur le bouton ci-dessous pour réinitialiser votre mot de passe :</p>" +
+                "            <a href='http://localhost:5173/passwordreset?code=" + user.getActivationCode() + "' class='btn'>Réinitialiser le Mot de Passe</a>" +
+                "            <p>Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet e-mail en toute sécurité.</p>" +
+                "        </div>" +
+                "        <div class='footer'>© 2024 Initiative. Tous droits réservés.</div>" +
+                "    </div>" +
+                "</body>" +
+                "</html>";
+
+        mailSending.sendEmail(user.getEmail(), "Récupération de Mot de Passe", emailContent);
 
         return user;
     }
