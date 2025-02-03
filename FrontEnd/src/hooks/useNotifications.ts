@@ -26,11 +26,12 @@ const useNotifications = (userId: string | undefined) => {
         const match = JSON.parse(event.data);
         const newNotification: Notification = {
           id: match.id,
-          title: "New match request",
-          info: `New match request from ${match.demander.username}`,
+          title: "Nouvelle demande de match",
+          info: `Nouvelle demande de match de ${match.demander.firstName} ${match.demander.lastName}`,
           userId: match.demander.id,
           seen: false,
         };
+
 
         setNotifications((prev) => {
           const existingNotifs = new Map(prev.map((n) => [n.id, n]));
@@ -72,6 +73,7 @@ const useNotifications = (userId: string | undefined) => {
       return updated;
     });
   };
+
 
   return { notifications, markAsRead };
 };

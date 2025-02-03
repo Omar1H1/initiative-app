@@ -8,7 +8,7 @@ interface CustomToastProps {
     title: string;
     message: string;
     userId: number;
-    t: any; // `t` is the toast instance
+    t: any;
 }
 
 const CustomToast = ({ title, message, userId, t }: CustomToastProps) => {
@@ -22,7 +22,7 @@ const CustomToast = ({ title, message, userId, t }: CustomToastProps) => {
                 setPhoto(imageUrl);
             } catch (err) {
                 console.error("Error fetching profile image:", err);
-                setPhoto("https://via.placeholder.com/150"); // Fallback image
+                setPhoto("https://via.placeholder.com/150");
             }
         };
 
@@ -62,7 +62,6 @@ const CustomToast = ({ title, message, userId, t }: CustomToastProps) => {
     );
 };
 
-// ✅ Create a function to trigger the toast
 export const showCustomToast = (title: string, message: string, userId: number) => {
     toast.custom((t) => <CustomToast title={title} message={message} userId={userId} t={t} />);
 };

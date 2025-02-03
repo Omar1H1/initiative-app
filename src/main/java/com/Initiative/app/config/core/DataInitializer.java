@@ -8,8 +8,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Configuration
 @RequiredArgsConstructor
@@ -18,9 +23,18 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final String[] firstNames = {"John", "Jane", "Michael", "Sarah", "David", "Emily", "Daniel", "Laura", "James", "Jessica"};
+    private final String[] lastNames = {"Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor"};
+
+    private final String[] profilePictures = {
+            "images/admin.png",
+            "images/supervisor.png",
+            "images/parrain.png",
+            "images/porteur.png"
+    };
+
     @Override
     public void run(String... args) {
-        // Check if users already exist
         if (userRepository.count() > 0) {
             System.out.println("Users already initialized.");
             return;
@@ -28,8 +42,8 @@ public class DataInitializer implements CommandLineRunner {
 
         List<User> users = new ArrayList<>();
         String defaultPassword = passwordEncoder.encode("password123");
+        Random random = new Random();
 
-        // Generate 20 users dynamically
         for (int i = 1; i <= 20; i++) {
             RoleEnum role = switch (i % 4) {
                 case 0 -> RoleEnum.ADMIN;
@@ -38,18 +52,49 @@ public class DataInitializer implements CommandLineRunner {
                 default -> RoleEnum.PORTEUR;
             };
 
+            String firstName = firstNames[random.nextInt(firstNames.length)];
+            String lastName = lastNames[random.nextInt(lastNames.length)];
+            byte[] profileImage = loadProfileImage(role);
+
             users.add(User.builder()
                     .username("user" + i)
-                    .firstName("FirstName" + i)
-                    .lastName("LastName" + i)
+                    .firstName(firstName)
+                    .lastName(lastName)
                     .email("user" + i + "@example.com")
                     .password(defaultPassword)
                     .role(role)
                     .isActive(true)
+                    .profileImage(profileImage)
                     .build());
         }
 
         userRepository.saveAll(users);
         System.out.println("20 dummy users initialized.");
+    }
+
+    private byte[] loadProfileImage(RoleEnum role) {
+        String imagePath;
+        switch (role) {
+            case ADMIN:
+                imagePath = profilePictures[0];
+                break;
+            case SUPERVISOR:
+                imagePath = profilePictures[1];
+                break;
+            case PARRAIN:
+                imagePath = profilePictures[2];
+                break;
+            case PORTEUR:
+                imagePath = profilePictures[3];
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown role: " + role);
+        }
+
+        try (InputStream inputStream = Files.newInputStream(Paths.get("src/main/resources/" + imagePath))) {
+            return inputStream.readAllBytes();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load profile image for role: " + role, e);
+        }
     }
 }
