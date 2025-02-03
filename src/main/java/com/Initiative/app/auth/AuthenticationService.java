@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Year;
 import java.util.Optional;
 
 @Service
@@ -128,7 +129,7 @@ public class AuthenticationService {
                 "            <a href='http://localhost:5173/signup/submitcode?code=" + user.getActivationCode() + "' class='btn'>Activer mon compte</a>" +
                 "            <p>Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet e-mail en toute sécurité.</p>" +
                 "        </div>" +
-                "        <div class='footer'>© 2024 Initiative. Tous droits réservés.</div>" +
+                "        <div class='footer'>©" +  Year.now().getValue() + " Initiative. Tous droits réservés.</div>" +
                 "    </div>" +
                 "</body>" +
                 "</html>";
@@ -220,7 +221,7 @@ public class AuthenticationService {
                 "            <a href='http://localhost:5173/passwordreset?code=" + user.getActivationCode() + "' class='btn'>Réinitialiser le Mot de Passe</a>" +
                 "            <p>Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet e-mail en toute sécurité.</p>" +
                 "        </div>" +
-                "        <div class='footer'>© 2024 Initiative. Tous droits réservés.</div>" +
+                "        <div class='footer'>©" + Year.now().getValue() + " Initiative. Tous droits réservés.</div>" +
                 "    </div>" +
                 "</body>" +
                 "</html>";

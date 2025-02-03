@@ -25,6 +25,7 @@ const Profiles = () => {
     try {
       const response = await api.get<Profile[]>("/api/v1/profiles");
       setProfiles(response.data);
+      console.log(response.data)
     } catch (err) {
       console.error("Error fetching profiles:", err);
       setError("Failed to fetch profiles. Please try again.");
@@ -86,43 +87,46 @@ const Profiles = () => {
         Profiles
       </h1>
       <div className="relative w-full max-w-full sm:max-w-2xl mx-auto mt-40 flex items-center justify-center">
-        {profiles.map((profile, index) => (
+        {profiles.map((profile : Profile, index : number) => (
+            profile.isActive &&
           <div
-            key={profile.id}
-            className={`absolute w-full sm:w-[90%] md:w-[70%] p-6 bg-white rounded-xl shadow-2xl transform transition-all duration-300 ease-in-out dark:bg-gray-800 ${index === profiles.length - 1 ? "scale-100 z-10" : "scale-90 z-0"
-              }`}
+          key={profile.id}
+        className={`absolute w-full sm:w-[90%] md:w-[70%] p-6 bg-white rounded-xl shadow-2xl transform transition-all duration-300 ease-in-out dark:bg-gray-800 ${index === profiles.length - 1 ? "scale-100 z-10" : "scale-90 z-0"
+        }`}
+      >
+        <img
+            src={photos[profile.id] ?? "https://via.placeholder.com/150"}
+            alt={`${profile.firstName} ${profile.lastName}`}
+            className="w-full h-48 object-fill rounded-lg"
+        />
+        <div className="mt-4">
+          <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
+            {profile.firstName} {profile.lastName}
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300">
+            {profile.username}
+          </p>
+          <p className="text-gray-500 dark:text-gray-400">
+            {profile.email}
+          </p>
+          <p className="text-gray-500 dark:text-gray-400">
+          </p>
+        </div>
+        <div className="mt-4 flex justify-between">
+          <button
+              className="w-20 bg-red-500 text-white p-2 rounded-md hover:bg-red-600 flex items-center justify-center"
+              onClick={() => handleDislike(profile)}
           >
-            <img
-                src={photos[profile.id] ?? "https://via.placeholder.com/150"}
-                alt={`${profile.firstName} ${profile.lastName}`}
-                className="w-full h-48 object-fill rounded-lg"
-            />
-            <div className="mt-4">
-              <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
-                {profile.firstName} {profile.lastName}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                {profile.username}
-              </p>
-              <p className="text-gray-500 dark:text-gray-400">
-                {profile.email}
-              </p>
-            </div>
-            <div className="mt-4 flex justify-between">
-              <button
-                className="w-20 bg-red-500 text-white p-2 rounded-md hover:bg-red-600 flex items-center justify-center"
-                onClick={() => handleDislike(profile)}
-              >
-                <IoCloseCircle />
-              </button>
-              <button
-                className="w-20 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 flex items-center justify-center"
-                onClick={() => handleLike(profile)}
-              >
-                <FaHeart />
-              </button>
-            </div>
-          </div>
+            <IoCloseCircle/>
+          </button>
+          <button
+              className="w-20 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 flex items-center justify-center"
+              onClick={() => handleLike(profile)}
+          >
+            <FaHeart/>
+          </button>
+        </div>
+      </div>
         ))}
       </div>
     </div>

@@ -4,5 +4,6 @@ export interface Profile {
     firstName: string;
     lastName: string;
     email: string;
+    isActive: boolean | null;
     matchList: any | null;
 }

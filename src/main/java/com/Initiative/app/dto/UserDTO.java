@@ -27,6 +27,8 @@ public class UserDTO {
 
     private String email;
 
+    private Boolean isActive;
+
 
     private List<Match> matchList;
 
@@ -39,6 +41,7 @@ public class UserDTO {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
+                .isActive(user.getIsActive())
                 .matchList(user.getMatchList())
                 .build();
 
