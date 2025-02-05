@@ -1,8 +1,10 @@
+import React from 'react';
+
 const NotificationItem: React.FC<{
     title: string;
     info: string;
     seen: boolean;
-    onClick: () => void
+    onClick: (e: React.MouseEvent<HTMLDivElement>) => Promise<void>;
 }> = ({ title, info, seen, onClick }) => {
 
     return (

@@ -2,10 +2,16 @@ import NotificationItem from "./NotificationItem";
 import useNotifications from "../hooks/useNotifications";
 import { useAtomValue } from "jotai";
 import userAtom from "../service/UserAtom";
+import { ImCheckmark } from "react-icons/im";
+import { RxCross2 } from "react-icons/rx";
+import React from "react";
+import { Axios } from "../service/Axios.tsx";
+
+const api = new Axios().getInstance();
 
 const Notification = () => {
     const user = useAtomValue(userAtom);
-    const { notifications, markAsRead } = useNotifications(user?.id ? String(user.id) : undefined);
+    const { notifications, setNotifications } = useNotifications(user?.id ? String(user.id) : undefined);
 
     if (!user?.id) {
         return (
@@ -23,6 +29,45 @@ const Notification = () => {
         );
     }
 
+    const handleAccept = async (e: React.MouseEvent<SVGElement>, id: number) => {
+        e.preventDefault();
+
+        try {
+            const response = await api.put(`/api/v1/match/accept/${id}`);
+            console.log("Accept response:", response.data);
+            setNotifications((prev) => prev.filter(notification => notification.id !== id));
+        } catch (error) {
+            console.error("Error accepting notification:", error);
+        }
+    };
+
+    const handleReject = async (e: React.MouseEvent<SVGElement>, id: number) => {
+        e.preventDefault();
+
+        try {
+            const response = await api.put(`/api/v1/match/reject/${id}`);
+            console.log("Reject response:", response.data);
+            setNotifications((prev) => prev.filter(notification => notification.id !== id));
+        } catch (error) {
+            console.error("Error rejecting notification:", error);
+        }
+    };
+
+    const handleMarkAsSeen = async (e: React.MouseEvent<HTMLDivElement>, id: number) => {
+        e.preventDefault();
+
+        try {
+            api.put(`/api/v1/match/seen/${id}`);
+            setNotifications((prev) =>
+                prev.map(notification =>
+                    notification.id === id ? { ...notification, seen: true } : notification
+                )
+            );
+        } catch (error) {
+            console.error("Error marking notification as seen:", error);
+        }
+    };
+
     console.log("Fetched notifications:", notifications);
 
     return (
@@ -33,13 +78,24 @@ const Notification = () => {
             {notifications.length > 0 ? (
                 <div className="space-y-4">
                     {notifications.map((notification) => (
-                        <NotificationItem
-                            key={notification.id}
-                            title={notification.title}
-                            info={notification.info}
-                            seen={notification.seen}
-                            onClick={() => markAsRead(notification.id)}
-                        />
+                        <div key={notification.id} className="flex items-center justify-between">
+                            <NotificationItem
+                                title={notification.title}
+                                info={notification.info}
+                                seen={notification.seen}
+                                onClick={(e)  => handleMarkAsSeen(e, notification.id)}
+                            />
+                            <div className="flex space-x-2">
+                                <ImCheckmark
+                                    className="text-green-500 cursor-pointer"
+                                    onClick={(e) => handleAccept(e, notification.id)}
+                                />
+                                <RxCross2
+                                    className="text-red-500 cursor-pointer"
+                                    onClick={(e) => handleReject(e, notification.id)}
+                                />
+                            </div>
+                        </div>
                     ))}
                 </div>
             ) : (

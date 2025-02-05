@@ -1,30 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { showCustomToast } from "../components/CustomToast.tsx";
-
-type Notification = {
-  id: number;
-  title: string;
-  info: string;
-  userId: number;
-  seen: boolean;
-};
+import { NotificationType } from "../types/Notification.ts";
+import { useAtomValue, useSetAtom } from "jotai";
+import notificationAtom from "../service/NotificationAtom.tsx";
 
 const useNotifications = (userId: string | undefined) => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const notifications = useAtomValue(notificationAtom);
+  const setNotifications = useSetAtom(notificationAtom);
 
   useEffect(() => {
     if (!userId) return;
 
     console.log(`Subscribing to notifications for user ID: ${userId}`);
     const eventSource = new EventSource(
-        `http://localhost:8080/api/v1/notifications/match?userId=${userId}`,
+        `http://localhost:8080/api/v1/notifications/match?userId=${userId}`
     );
 
     eventSource.onmessage = (event) => {
       console.log("Notification event received:", event.data);
       try {
         const match = JSON.parse(event.data);
-        const newNotification: Notification = {
+        const newNotification: NotificationType = {
           id: match.id,
           title: "Nouvelle demande de match",
           info: `Nouvelle demande de match de ${match.demander.firstName} ${match.demander.lastName}`,
@@ -32,9 +28,8 @@ const useNotifications = (userId: string | undefined) => {
           seen: false,
         };
 
-
-        setNotifications((prev) => {
-          const existingNotifs = new Map(prev.map((n) => [n.id, n]));
+        setNotifications((prev: NotificationType[]) => {
+          const existingNotifs = new Map(prev.map((n: NotificationType) => [n.id, n]));
           existingNotifs.set(newNotification.id, newNotification);
 
           const updated = Array.from(existingNotifs.values());
@@ -49,8 +44,8 @@ const useNotifications = (userId: string | undefined) => {
       }
     };
 
-    eventSource.onerror = () => {
-      console.error("Error with notification EventSource.");
+    eventSource.onerror = (error) => {
+      console.error("Error with notification EventSource:", error);
       eventSource.close();
     };
 
@@ -66,7 +61,8 @@ const useNotifications = (userId: string | undefined) => {
 
   const markAsRead = (id: number) => {
     setNotifications((prev) => {
-      const updated = prev.map((n) =>
+      const currentNotifications = prev || [];
+      const updated = currentNotifications.map((n) =>
           n.id === id ? { ...n, seen: true } : n
       );
       localStorage.setItem("notifications", JSON.stringify(updated));
@@ -74,8 +70,7 @@ const useNotifications = (userId: string | undefined) => {
     });
   };
 
-
-  return { notifications, markAsRead };
+  return { notifications, markAsRead, setNotifications };
 };
 
 export default useNotifications;
