@@ -3,12 +3,14 @@ package com.Initiative.app.service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MailSending {
 
     private final JavaMailSender emailSender;
@@ -25,9 +27,9 @@ public class MailSending {
 
             emailSender.send(message);
 
-            System.out.println("HTML email sent successfully");
+            log.info("HTML email sent successfully");
         } catch (MessagingException e) {
-            System.err.println("Error sending email: " + e.getMessage());
+            log.error("Error sending email: {}", e.getMessage());
         }
     }
 }
