@@ -26,7 +26,7 @@ const Navbar = () => {
     };
 
     const handleNotificationClick = () => {
-        navigate("/natif");
+        navigate("/notification");
         setNav(false);
     };
 

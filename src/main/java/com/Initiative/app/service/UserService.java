@@ -96,6 +96,8 @@ public class UserService {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .isActive(user.getIsActive())
+                .sectorOfActivity(user.getSectorOfActivity())
+                .projectDescription(user.getProjectDescription())
                 .matchList(user.getMatchList())
                 .build();
 

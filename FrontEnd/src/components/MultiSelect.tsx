@@ -27,9 +27,9 @@ const MultiSelect = ({ onChange }: { onChange: (selectedOptions: string[]) => vo
 
     return (
         <div className="mb-4">
-            <label className="block text-gray-700 text-lg font-bold mb-2">Select Options</label>
+            <label className="block text-black dark:text-white text-lg font-bold mb-2">Select Options</label>
             <select
-                className="relative py-3 ps-4 pe-9 flex gap-x-2 text-nowrap w-full cursor-pointer bg-white border border-gray-200 rounded-lg text-start text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="relative py-3 ps-4 pe-9 flex gap-x-2 text-nowrap w-full cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 rounded-lg text-start text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={selectedOptions[0] || ""}
                 onChange={(e) => handleSelect(e.target.value)}
             >

@@ -44,6 +44,7 @@ public class User implements UserDetails {
 
     private String password;
 
+    @Column(columnDefinition="TEXT")
     private String projectDescription;
 
     @Enumerated(EnumType.STRING)

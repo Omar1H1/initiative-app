@@ -1,5 +1,6 @@
 package com.Initiative.app.dto;
 
+import com.Initiative.app.enums.SectorsOfActivity;
 import com.Initiative.app.model.Match;
 import com.Initiative.app.model.User;
 import jakarta.persistence.Lob;
@@ -28,6 +29,10 @@ public class UserDTO {
     private String email;
 
     private Boolean isActive;
+
+    private String projectDescription;
+
+    private SectorsOfActivity sectorOfActivity;
 
 
     private List<Match> matchList;

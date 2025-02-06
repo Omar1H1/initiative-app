@@ -5,6 +5,10 @@ import { FaHeart } from "react-icons/fa";
 import { IoCloseCircle } from "react-icons/io5";
 import { useAtomValue } from "jotai";
 import loginAtom from "../service/LoginState.tsx";
+import { FaBriefcase } from "react-icons/fa";
+import { CgProfile } from "react-icons/cg";
+
+
 
 const api = new Axios().getInstance();
 
@@ -86,7 +90,7 @@ const Profiles = () => {
       <h1 className="text-2xl font-bold mb-4 px-20 flex items-center justify-center py-20 text-gray-800 dark:text-white">
         Profiles
       </h1>
-      <div className="relative w-full max-w-full sm:max-w-2xl mx-auto mt-40 flex items-center justify-center">
+      <div className="pt-10 relative w-full max-w-full sm:max-w-2xl mx-auto mt-40 flex items-center justify-center">
         {profiles.map((profile : Profile, index : number) => (
             profile.isActive &&
           <div
@@ -99,38 +103,44 @@ const Profiles = () => {
             alt={`${profile.firstName} ${profile.lastName}`}
             className="w-full h-48 object-fill rounded-lg"
         />
-        <div className="mt-4">
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
-            {profile.firstName} {profile.lastName}
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300">
-            {profile.username}
-          </p>
-          <p className="text-gray-500 dark:text-gray-400">
-            {profile.email}
-          </p>
-          <p className="text-gray-500 dark:text-gray-400">
-          </p>
-        </div>
-        <div className="mt-4 flex justify-between">
-          <button
-              className="w-20 bg-red-500 text-white p-2 rounded-md hover:bg-red-600 flex items-center justify-center"
-              onClick={() => handleDislike(profile)}
-          >
-            <IoCloseCircle/>
-          </button>
-          <button
-              className="w-20 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 flex items-center justify-center"
-              onClick={() => handleLike(profile)}
-          >
-            <FaHeart/>
-          </button>
-        </div>
-      </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+            <div className="mt-4">
+              <div className="flex items-center pt-2 pb-2">
+                <CgProfile className="mr-2"/>
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+                  {profile.firstName} {profile.lastName}
+                </h2>
+              </div>
+                <div className="flex items-center pt-2 pb-2">
+                  <FaBriefcase className="mr-2"/>
+                  <p className="text-gray-600 font-semibold dark:text-gray-300">
+                    {profile.sectorOfActivity}
+                  </p>
+                </div>
+                <p className="text-gray-500 dark:text-gray-400">
+                  {profile.projectDescription}
+                </p>
+                <p className="text-gray-500 dark:text-gray-400">
+                </p>
+              </div>
+              <div className="mt-4 flex justify-between">
+                <button
+                    className="w-20 bg-red-500 text-white p-2 rounded-md hover:bg-red-600 flex items-center justify-center"
+                    onClick={() => handleDislike(profile)}
+                >
+                  <IoCloseCircle/>
+                </button>
+                <button
+                    className="w-20 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 flex items-center justify-center"
+                    onClick={() => handleLike(profile)}
+                >
+                  <FaHeart/>
+                </button>
+              </div>
+            </div>
+            ))}
+          </div>
+          </div>
+          );
+        };
 
-export default Profiles;
+        export default Profiles;

@@ -1,6 +1,7 @@
 package com.Initiative.app.config.core;
 
 import com.Initiative.app.enums.RoleEnum;
+import com.Initiative.app.enums.SectorsOfActivity;
 import com.Initiative.app.model.User;
 import com.Initiative.app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,8 @@ public class DataInitializer implements CommandLineRunner {
 
             String firstName = firstNames[random.nextInt(firstNames.length)];
             String lastName = lastNames[random.nextInt(lastNames.length)];
+            String project = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.";
+
             byte[] profileImage = loadProfileImage(role);
 
             users.add(User.builder()
@@ -63,6 +66,8 @@ public class DataInitializer implements CommandLineRunner {
                     .email("user" + i + "@example.com")
                     .password(defaultPassword)
                     .role(role)
+                    .sectorOfActivity(SectorsOfActivity.EDUCATION)
+                    .projectDescription(project)
                     .isActive(true)
                     .profileImage(profileImage)
                     .build());
