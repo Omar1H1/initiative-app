@@ -11,8 +11,7 @@ const api = new Axios().getInstance();
 
 const Notification = () => {
     const user = useAtomValue(userAtom);
-    const { notifications, setNotifications } = useNotifications(user?.id ? String(user.id) : undefined);
-
+    const { notifications = [], setNotifications } = useNotifications(user?.id ? String(user.id) : undefined);
     if (!user?.id) {
         return (
             <p className="text-red-500 dark:text-red-400">
@@ -31,15 +30,18 @@ const Notification = () => {
 
     const handleAccept = async (e: React.MouseEvent<SVGElement>, id: number) => {
         e.preventDefault();
-
         try {
-            const response = await api.put(`/api/v1/match/accept/${id}`);
-            console.log("Accept response:", response.data);
-            setNotifications((prev) => prev.filter(notification => notification.id !== id));
+            await api.put(`/api/v1/match/accept/${id}`);
+            setNotifications((prev) => {
+                const updatedNotifications = prev.filter(notification => notification.id !== id);
+                localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
+                return updatedNotifications;
+            });
         } catch (error) {
             console.error("Error accepting notification:", error);
         }
     };
+
 
     const handleReject = async (e: React.MouseEvent<SVGElement>, id: number) => {
         e.preventDefault();
@@ -47,7 +49,11 @@ const Notification = () => {
         try {
             const response = await api.put(`/api/v1/match/reject/${id}`);
             console.log("Reject response:", response.data);
-            setNotifications((prev) => prev.filter(notification => notification.id !== id));
+            setNotifications((prev) => {
+                const updatedNotifications = prev.filter(notification => notification.id !== id);
+                localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
+                return updatedNotifications;
+            });
         } catch (error) {
             console.error("Error rejecting notification:", error);
         }
@@ -57,7 +63,7 @@ const Notification = () => {
         e.preventDefault();
 
         try {
-            api.put(`/api/v1/match/seen/${id}`);
+            await api.put(`/api/v1/match/seen/${id}`);
             setNotifications((prev) =>
                 prev.map(notification =>
                     notification.id === id ? { ...notification, seen: true } : notification

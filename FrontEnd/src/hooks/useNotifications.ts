@@ -49,8 +49,12 @@ const useNotifications = (userId: string | undefined) => {
       eventSource.close();
     };
 
-    return () => eventSource.close();
+    return () => {
+      console.log("Cleaning up EventSource");
+      eventSource.close();
+    };
   }, [userId]);
+
 
   useEffect(() => {
     const savedNotifications = localStorage.getItem("notifications");

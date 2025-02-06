@@ -16,7 +16,7 @@ const Signup = (props: any) => {
     const [username, setUsername] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
-    const [, setSelectedOptions] = useState<string[]>([]);
+    const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
@@ -33,7 +33,10 @@ const Signup = (props: any) => {
             lastName,
             email,
             password,
+            sectorOfActivity: selectedOptions[0] || "",
         };
+
+        console.log("User  Info:", userInfo);
 
         formData.append("request", new Blob([JSON.stringify(userInfo)], { type: "application/json" }));
         formData.append("profileImage", selectedImage);
@@ -44,7 +47,7 @@ const Signup = (props: any) => {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            console.log("User has been created successfully:", response.data);
+            console.log("User  has been created successfully:", response.data);
             navigate("/login");
         } catch (error) {
             console.error("Error during creation:", error);
@@ -59,9 +62,7 @@ const Signup = (props: any) => {
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label htmlFor="firstName" className="block text-gray-700 font-bold mb-2">
-                            Prénom
-                        </label>
+                        <label htmlFor="firstName" className="block text-gray-700 font-bold mb-2">Prénom</label>
                         <input
                             type="text"
                             id="firstName"
@@ -72,9 +73,7 @@ const Signup = (props: any) => {
                     </div>
 
                     <div>
-                        <label htmlFor="lastName" className="block text-gray-700 font-bold mb-2">
-                            Nom
-                        </label>
+                        <label htmlFor="lastName" className="block text-gray-700 font-bold mb-2">Nom</label>
                         <input
                             type="text"
                             id="lastName"
@@ -85,9 +84,7 @@ const Signup = (props: any) => {
                     </div>
 
                     <div>
-                        <label htmlFor="email" className="block text-gray-700 font-bold mb-2">
-                            Email
-                        </label>
+                        <label htmlFor="email" className="block text-gray-700 font-bold mb-2">Email</label>
                         <input
                             type="email"
                             id="email"
@@ -98,9 +95,7 @@ const Signup = (props: any) => {
                     </div>
 
                     <div>
-                        <label htmlFor="password" className="block text-gray-700 font-bold mb-2">
-                            Mot de passe
-                        </label>
+                        <label htmlFor="password" className="block text-gray-700 font-bold mb-2">Mot de passe</label>
                         <input
                             type="password"
                             id="password"
@@ -111,9 +106,7 @@ const Signup = (props: any) => {
                     </div>
 
                     <div>
-                        <label htmlFor="username" className="block text-gray-700 font-bold mb-2">
-                            Nom d'utilisateur
-                        </label>
+                        <label htmlFor="username" className="block text-gray-700 font-bold mb-2">Nom d'utilisateur</label>
                         <input
                             type="text"
                             id="username"
@@ -124,9 +117,7 @@ const Signup = (props: any) => {
                     </div>
 
                     <div>
-                        <label htmlFor="profileImage" className="block text-gray-700 font-bold mb-2">
-                            Image de profil
-                        </label>
+                        <label htmlFor="profileImage" className="block text-gray-700 font-bold mb-2">Image de profil</label>
                         <input
                             type="file"
                             id="profileImage"
@@ -151,9 +142,7 @@ const Signup = (props: any) => {
                             onChange={(e) => setRememberMe(e.target.checked)}
                             className="w-4 h-4 border-gray-300 rounded"
                         />
-                        <label htmlFor="rememberme" className="ml-2 text-gray-700">
-                            Se souvenir de moi
-                        </label>
+                        <label htmlFor="rememberme" className="ml-2 text-gray-700">Se souvenir de moi</label>
                     </div>
 
                     <button
