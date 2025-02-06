@@ -1,5 +1,6 @@
 package com.Initiative.app.controller;
 
+import com.Initiative.app.enums.MatchStatus;
 import com.Initiative.app.model.Match;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +21,21 @@ public class NotificationController {
     public void sendMatchNotification(Match match) {
         Long receiverId = match.getReceiver().getId();
         Sinks.Many<Match> sink = userSinks.get(receiverId);
-        if (sink != null) {
+        if (sink != null && shouldSendNotification(match)) {
             sink.tryEmitNext(match);
         }
+    }
+
+    public void sendMatchHasBeenAccepted(Match match) {
+        Long demanderId = match.getDemander().getId();
+        Sinks.Many<Match> sink = userSinks.get(demanderId);
+        if (sink != null && match.getStatus() == MatchStatus.accepted) {
+            sink.tryEmitNext(match);
+        }
+    }
+
+    private boolean shouldSendNotification(Match match) {
+        return !match.isSeen();
     }
 
     @GetMapping(value = "/match", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

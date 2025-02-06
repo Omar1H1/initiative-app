@@ -22,25 +22,23 @@ public class MessageService {
 
 
     public Optional<Message> sendMessage(Message message) {
+        Optional<User> senderOpt = userService.getUserById(message.getSender());
+        Optional<User> receiverOpt = userService.getUserById(message.getReceiver());
 
-        Optional<User> send = userService.getUserById(message.getSender());
-        Optional<User> receiver = userService.getUserById(message.getSender());
-        List<Match> listOfMatch = send.get().getMatchList();
-        boolean isFriends = false;
-
-        if (receiver.isEmpty()) {
+        if (senderOpt.isEmpty() || receiverOpt.isEmpty()) {
             return Optional.empty();
         }
 
-        for(Match match : listOfMatch) {
+        User sender = senderOpt.get();
+        User receiver = receiverOpt.get();
+        List<Match> listOfMatch = sender.getMatchList();
 
-            if(match.getDemander().getId() == send.get().getId() && match.getReceiver().getId() == receiver.get().getId() || match.getDemander().getId() == receiver.get().getId() && match.getReceiver().getId() == send.get().getId()) {
-                isFriends = true;
-            }
+        boolean isFriends = listOfMatch.stream().anyMatch(match ->
+                (match.getDemander().getId() == sender.getId() && match.getReceiver().getId() == receiver.getId()) ||
+                        (match.getDemander().getId() == receiver.getId() && match.getReceiver().getId() == sender.getId())
+        );
 
-        }
-
-        if(isFriends) {
+        if (isFriends) {
             sendMessageController.sendMessage(message);
             return Optional.of(messageRepository.save(message));
         }

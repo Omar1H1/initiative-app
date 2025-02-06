@@ -22,10 +22,15 @@ const useNotifications = (userId: string | undefined) => {
         const match = JSON.parse(event.data);
         const newNotification: NotificationType = {
           id: match.id,
-          title: "Nouvelle demande de match",
-          info: `Nouvelle demande de match de ${match.demander.firstName} ${match.demander.lastName}`,
-          userId: match.demander.id,
+          title: match.status === "pending"
+              ? "Nouvelle demande de match"
+              : "Demande de match acceptée",
+          info: match.status === "pending"
+              ? `Nouvelle demande de match de ${match.demander.firstName} ${match.demander.lastName}`
+              : `Votre demande de match avec ${match.receiver?.firstName || 'inconnu'} ${match.receiver?.lastName || ''} a bien été acceptée`,
+          demanderId: match.demander.id,
           seen: false,
+          status: match.status,
         };
 
         setNotifications((prev: NotificationType[]) => {
@@ -38,7 +43,7 @@ const useNotifications = (userId: string | undefined) => {
           return updated;
         });
 
-        showCustomToast(newNotification.title, newNotification.info, newNotification.userId);
+        showCustomToast(newNotification.title, newNotification.info, newNotification.demanderId);
       } catch (error) {
         console.error("Error parsing notification event:", error);
       }
@@ -54,7 +59,6 @@ const useNotifications = (userId: string | undefined) => {
       eventSource.close();
     };
   }, [userId]);
-
 
   useEffect(() => {
     const savedNotifications = localStorage.getItem("notifications");

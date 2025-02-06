@@ -44,6 +44,8 @@ public class User implements UserDetails {
 
     private String password;
 
+    private String projectDescription;
+
     @Enumerated(EnumType.STRING)
     private SectorsOfActivity sectorOfActivity;
 

@@ -6,23 +6,25 @@ import com.Initiative.app.enums.RoleEnum;
 import com.Initiative.app.model.User;
 import com.Initiative.app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
 
     public User createUser(User user) {
-            return userRepository.save(user);
+        log.info("Saving user: {}", user.getSectorOfActivity());
+        return userRepository.save(user);
     }
 
     public void deleteUser(User user) {
@@ -59,21 +61,23 @@ public class UserService {
         return userRepository.findByActivationCode(activationCode);
 
     }
+
+
     public User prepareUserForRegistration(User request, byte[] profileImage) {
         if (profileImage == null || profileImage.length == 0) {
             throw new IllegalArgumentException("Profile image must not be empty.");
         }
 
-        return User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(request.getPassword())
-                .role(request.getRole())
-                .isActive(true)
-                .profileImage(profileImage)
-                .build();
+        User userToSave = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new IllegalArgumentException("User with email " + request.getEmail() + " does not exist."));
+
+        userToSave.setUsername(request.getUsername());
+        userToSave.setPassword(request.getPassword());
+        userToSave.setSectorOfActivity(request.getSectorOfActivity());
+        userToSave.setIsActive(true);
+        userToSave.setProjectDescription(request.getProjectDescription());
+        userToSave.setProfileImage(profileImage);
+
+        return userToSave;
     }
 
 

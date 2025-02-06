@@ -8,35 +8,50 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MatchingServiceImpl implements MatchingService {
+public class MatchingServiceImpl {
 
 
     private final MatchingRepository matchingRepository;
 
-    @Override
     public Match createMatch(Match match) {
         return matchingRepository.save(match);
     }
 
-    @Override
     public List<Match> receiverHasMatches(User user) {
         return matchingRepository.findAllByReceiver(user);
     }
 
-    @Override
     public List<Match> demanderHasMatches(User user) {
         return matchingRepository.findAllByDemander(user);
     }
 
-    @Override
     public Match rejectMatch(Match match) {
         Match foundMatch = matchingRepository.findById(match.getId()).orElseThrow();
 
         foundMatch.setStatus(MatchStatus.rejected);
 
         return matchingRepository.save(foundMatch);
+    }
+
+    public Match acceptMatch(Match match) {
+        Match foundMatch = matchingRepository.findById(match.getId()).orElseThrow();
+
+        foundMatch.setStatus(MatchStatus.accepted);
+
+        return matchingRepository.save(foundMatch);
+    }
+
+    public Optional<Match> findMatchById(Long id) {
+        return matchingRepository.findById(id);
+    }
+
+    public void hasBeenSeen(Long id) {
+        Optional<Match> match = findMatchById(id);
+
+        match.get().setSeen(true);
     }
 }

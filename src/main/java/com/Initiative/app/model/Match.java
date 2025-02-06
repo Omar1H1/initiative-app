@@ -28,6 +28,9 @@ public class Match {
     @Builder.Default
     private MatchStatus status = MatchStatus.pending;
 
+    @Builder.Default
+    private boolean isSeen = false;
+
 
 
 

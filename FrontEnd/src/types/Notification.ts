@@ -2,6 +2,7 @@ export interface NotificationType {
     id: number;
     title: string;
     info: string;
-    userId: number;
+    demanderId: number;
     seen: boolean;
+    status: string;
 }

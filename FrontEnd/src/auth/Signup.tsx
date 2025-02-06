@@ -17,6 +17,7 @@ const Signup = (props: any) => {
     const [rememberMe, setRememberMe] = useState(false);
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+    const [projectDescription, setProjectDescription] = useState("")
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
@@ -33,6 +34,7 @@ const Signup = (props: any) => {
             lastName,
             email,
             password,
+            projectDescription,
             sectorOfActivity: selectedOptions[0] || "",
         };
 
@@ -55,7 +57,7 @@ const Signup = (props: any) => {
     };
 
     return (
-        <div className="bg-gradient-to-b from-[#360033] to-[#0b8793] min-h-screen px-4 flex items-center justify-center">
+        <div className="min-h-screen px-4 flex items-center justify-center">
             <div className="w-full max-w-lg bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg rounded-lg shadow-lg p-8 mt-24">
                 <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-6 text-center">
                     Créer un compte
@@ -132,10 +134,22 @@ const Signup = (props: any) => {
                         />
                     </div>
 
-                    <MultiSelect onChange={setSelectedOptions} />
+                    <div>
+                        <label htmlFor="profileImage" className="block text-gray-700 font-bold mb-2">Pouvez vous dans 250 caracteres expliquer votre projet</label>
+                        <textarea
+                            className="w-full h-32 p-2 border border-gray-400 rounded-lg resize-none" id="text-area"
+                            rows="4"
+                            cols="50"
+                            maxLength="280"
+                            value={projectDescription}
+                            onChange={(e) => setProjectDescription(e.target.value)}
+                        ></textarea>
+                    </div>
+
+                    <MultiSelect onChange={setSelectedOptions}/>
 
                     <div className="flex items-center">
-                        <input
+                    <input
                             type="checkbox"
                             id="rememberme"
                             checked={rememberMe}
