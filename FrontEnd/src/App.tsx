@@ -42,7 +42,7 @@ const App = () => {
         <Route path="test" element={<Signup />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Toaster position="top-left" />
+      <Toaster position="top-center" />
     </BrowserRouter>
   );
 };

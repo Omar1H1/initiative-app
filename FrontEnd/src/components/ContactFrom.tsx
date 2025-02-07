@@ -1,31 +1,43 @@
 import { useState } from "react";
 import { Axios } from "../service/Axios.tsx";
+import {useNavigate} from "react-router-dom";
+import {toast} from "react-hot-toast";
 
 const api = new Axios().getInstance();
 
 const ContactFrom = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [firstname, setFirstName] = useState("");
+  const [lastname, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [text, setText] = useState("");
+  const [project, setProject] = useState("");
+  const navigate = useNavigate();
+
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     const data = {
-      firstName,
-      lastName,
+      firstname,
+      lastname,
       email,
-      text,
+      project,
     };
 
-    try {
-      const response = await api.post("/api/v1/contact", data);
-      console.log("Contact form has been sent with success : ", response.data);
-    } catch (error) {
-      console.log("error happend during the submit opreation : ", error);
-    }
+    toast.promise(
+        api.post("/api/v1/contact", data),
+        {
+          loading: 'Envoi en cours...',
+          success: <b>Le formulaire de contact a été envoyé avec succès !</b>,
+          error: <b>Une erreur est survenue lors de l'envoi du formulaire de contact.</b>,
+        }
+    ).then(() => {
+      console.log("Contact form has been sent with success");
+      navigate("/");
+    }).catch((error) => {
+      console.error("Error during the submit operation: ", error);
+    });
   };
+
 
   // @ts-ignore
   return (
@@ -47,7 +59,7 @@ const ContactFrom = () => {
                 type="text"
                 id="firstName"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                value={firstName}
+                value={firstname}
                 onChange={(e) => setFirstName(e.target.value)}
               />
             </div>
@@ -62,7 +74,7 @@ const ContactFrom = () => {
                 type="text"
                 id="lastName"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                value={lastName}
+                value={lastname}
                 onChange={(e) => setLastName(e.target.value)}
               />
             </div>
@@ -94,8 +106,8 @@ const ContactFrom = () => {
                 rows="4"
                 cols="50"
                 maxLength="280"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                value={project}
+                onChange={(e) => setProject(e.target.value)}
                ></textarea>
               </div>
             </div>

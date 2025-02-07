@@ -20,6 +20,9 @@ public class MailSending {
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
+            log.info("user email : {}", toEmail);
+            log.info("email content : {}", body);
+
             helper.setFrom("omerhamad1o1@gmail.com");
             helper.setTo(toEmail);
             helper.setSubject(subject);

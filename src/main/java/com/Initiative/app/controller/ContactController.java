@@ -1,5 +1,6 @@
 package com.Initiative.app.controller;
 
+import java.time.Year;
 import java.util.List;
 
 import com.Initiative.app.service.MailSending;
@@ -27,6 +28,8 @@ public class ContactController {
 
     @Autowired
     private ContactFormService contactFormService;
+
+    @Autowired
     private MailSending mailSending;
 
 
@@ -81,13 +84,15 @@ public class ContactController {
 
             ContactForm savedContact = contactFormService.createContact(contactToSave);
 
-            mailSending.sendEmail(
-                    savedContact.getEmail(),
-                    "Contact Form",
-                    "Hello " + savedContact.getFirstname() + ", your contact form has been submitted. We will get back to you as soon as possible."
+            String emailContent = generateEmailContent(
+                    "Confirmation de votre demande de contact",
+                    "Bonjour " + savedContact.getFirstname() + ",<br><br>" +
+                            "Votre demande de contact a été soumise avec succès. Nous vous contacterons dès que possible.<br><br>" +
+                            "Merci de votre patience."
             );
 
-            // Return the saved contact as a response
+            mailSending.sendEmail(savedContact.getEmail(), "Contact Form Submission", emailContent);
+
             return ResponseEntity.ok(savedContact);
 
         } catch (Exception e) {
@@ -96,4 +101,27 @@ public class ContactController {
         }
     }
 
+    private String generateEmailContent(String subject, String body) {
+        return "<!DOCTYPE html>" +
+                "<html>" +
+                "<head>" +
+                "    <meta charset='UTF-8'>" +
+                "    <style>" +
+                "        body { font-family: Arial, sans-serif; background-color: #e7f3ff; margin: 0; padding: 0; }" +
+                "        .container { max-width: 600px; background: #ffffff; margin: 20px auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }" +
+                "        .header { background: #007BFF; padding: 20px; text-align: center; color: #ffffff; font-size: 24px; border-top-left-radius: 10px; border-top-right-radius: 10px; }" +
+                "        .content { padding: 20px; text-align: center; font-size: 16px; color: #333333; }" +
+                "        .btn { display: inline-block; background: #0056b3; color: #ffffff; padding: 12px 20px; text-decoration: none; font-size: 18px; border-radius: 5px; margin-top: 20px; }" +
+                "        .footer { text-align: center; padding: 15px; font-size: 14px; color: #777777; }" +
+                "    </style>" +
+                "</head>" +
+                "<body>" +
+                "    <div class='container'>" +
+                "        <div class='header'>" + subject + "</div>" +
+                "        <div class='content'>" + body + "</div>" +
+                "        <div class='footer'>©" + Year.now().getValue() + " Initiative. Tous droits réservés.</div>" +
+                "    </div>" +
+                "</body>" +
+                "</html>";
+    }
 }
