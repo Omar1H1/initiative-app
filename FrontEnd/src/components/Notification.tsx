@@ -6,6 +6,8 @@ import { ImCheckmark } from "react-icons/im";
 import { RxCross2 } from "react-icons/rx";
 import React, {useEffect} from "react";
 import { Axios } from "../service/Axios.tsx";
+import { IoTrashBinOutline } from "react-icons/io5";
+
 
 const api = new Axios().getInstance();
 
@@ -130,7 +132,7 @@ const Notification = () => {
                                         />
                                     </>
                                 )}
-                                <RxCross2
+                                <IoTrashBinOutline
                                     className="text-red-500 cursor-pointer"
                                     onClick={(e) => handleRemoveNotification(e, notification.id)}
                                 />

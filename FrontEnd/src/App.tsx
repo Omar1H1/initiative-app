@@ -42,7 +42,16 @@ const App = () => {
         <Route path="test" element={<Signup />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Toaster position="top-center" />
+      <Toaster
+          position="top-center"
+          toastOptions={{
+            className: 'bg-white text-black dark:bg-gray-800 dark:text-white',
+            style: {
+              border: '1px solid #D1D5DB',
+              padding: '16px',
+            }
+          }}
+      />
     </BrowserRouter>
   );
 };

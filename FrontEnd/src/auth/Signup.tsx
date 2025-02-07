@@ -188,7 +188,7 @@ const Signup = (props: any) => {
                     </div>
 
                     <div>
-                        <label htmlFor="projectDescription" className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Pouvez vous dans 250 caracteres expliquer votre projet</label>
+                        <label htmlFor="projectDescription" className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Pouvez vous dans 250 caracteres expliquer votre projet ou bien domain d'expertise</label>
                         <textarea
                             className="w-full h-32 p-2 border border-gray-400 rounded-lg resize-none dark:bg-gray-700 dark:text-white"
                             id="projectDescription"

@@ -69,7 +69,7 @@ const PasswordRecovery = () => {
                   <p className="text-center text-green-500 text-xl dark:text-green-300">
                     Un lien pour changer votre mot de passe vous a été envoyé sur
                     votre adresse mail :{" "}
-                    <span className="font-bold text-[9px] sm:text-xl">{email}</span>
+                    <span className="font-bold text-[12px] sm:text-xl">{email}</span>
                   </p>
               )
           ) : (
@@ -77,7 +77,7 @@ const PasswordRecovery = () => {
                 <form onSubmit={handleTryAgain}>
                   <p className="text-center text-red-500 text-sm sm:text-xl dark:text-red-300">
                     L'email renseigné{" "}
-                    <span className="font-bold text-[8px] sm:text-xl">{email}</span>{" "}
+                    <span className="font-bold text-[12px] sm:text-xl">{email}</span>{" "}
                     n'existait pas
                   </p>
                   <button

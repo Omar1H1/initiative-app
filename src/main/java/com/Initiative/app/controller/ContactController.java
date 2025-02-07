@@ -91,7 +91,7 @@ public class ContactController {
                             "Merci de votre patience."
             );
 
-            mailSending.sendEmail(savedContact.getEmail(), "Contact Form Submission", emailContent);
+            mailSending.sendEmail(savedContact.getEmail(), "Initiative France", emailContent);
 
             return ResponseEntity.ok(savedContact);
 
