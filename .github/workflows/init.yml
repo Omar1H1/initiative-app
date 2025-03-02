@@ -10,7 +10,7 @@ jobs:
   get-version:
     uses: shiipou/github-actions/.github/workflows/get-version.yml@main
     with:
-      release-branches: '^(main)$'
+      release-branches: "^(main)$"
 
   install-java:
     runs-on: ubuntu-latest
@@ -18,8 +18,8 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: "temurin"
+          java-version: "21"
 
       - name: Install and Initialize PostgreSQL
         uses: ikalnytskyi/action-setup-postgres@v6
@@ -35,11 +35,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Run Unit Tests with Coverage
-        run: mvn test
-  
-
-
-
-
-        
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build and analyze
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Omar1H1_initiative-app

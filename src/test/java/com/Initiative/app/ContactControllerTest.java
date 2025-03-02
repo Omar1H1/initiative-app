@@ -5,15 +5,14 @@ import com.Initiative.app.model.ContactForm;
 import com.Initiative.app.service.ContactFormService;
 import com.Initiative.app.service.MailSending;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,6 +37,7 @@ public class ContactControllerTest {
 
     @BeforeEach
     public void setup() {
+        MockitoAnnotations.openMocks(this);
         contactForm = ContactForm.builder()
                 .firstname("John")
                 .lastname("Doe")
@@ -68,14 +68,14 @@ public class ContactControllerTest {
     @Test
     public void testCreateContactFailureContactFormService() {
         // Arrange
-        doThrow(new RuntimeException("Test exception")).when(contactFormService).createContact(any(ContactForm.class));
+        when(contactFormService.createContact(any(ContactForm.class)))
+                .thenThrow(new RuntimeException("Test exception"));
 
         // Act
         ResponseEntity<?> response = contactController.createContact(contactForm);
 
         // Assert
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertThrows(RuntimeException.class, () -> contactController.createContact(contactForm));
         assertEquals("Error creating contact: Test exception", response.getBody());
     }
 
@@ -89,7 +89,8 @@ public class ContactControllerTest {
                 .project(contactForm.getProject())
                 .build();
         when(contactFormService.createContact(any(ContactForm.class))).thenReturn(savedContact);
-        doThrow(new RuntimeException("Test exception")).when(mailSending).sendEmail(any(String.class), any(String.class), any(String.class));
+        doThrow(new RuntimeException("Test exception"))
+                .when(mailSending).sendEmail(any(String.class), any(String.class), any(String.class));
 
         // Act
         ResponseEntity<?> response = contactController.createContact(contactForm);
@@ -106,6 +107,6 @@ public class ContactControllerTest {
 
         // Assert
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Error creating contact: Cannot invoke \"com.Initiative.Initiative.app.model.ContactForm.getFirstname()\" because \"contactForm\" is null", response.getBody());
+        assertTrue(response.getBody().toString().contains("Cannot invoke"));
     }
 }

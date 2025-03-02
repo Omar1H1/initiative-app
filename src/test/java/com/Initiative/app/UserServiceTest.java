@@ -3,9 +3,11 @@ package com.Initiative.app;
 import com.Initiative.app.model.User;
 import com.Initiative.app.repository.UserRepository;
 import com.Initiative.app.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -24,6 +26,11 @@ public class UserServiceTest {
 
     @InjectMocks
     private UserService userService;
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
 
 
     @Test
