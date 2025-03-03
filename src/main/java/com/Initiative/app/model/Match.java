@@ -31,8 +31,12 @@ public class Match {
     @Builder.Default
     private boolean isSeen = false;
 
+    public Long getDemanderId() {
+        return demander != null ? demander.getId() : null;
+    }
 
-
-
+    public Long getReceiverId() {
+        return receiver != null ? receiver.getId() : null;
+    }
 
 }
