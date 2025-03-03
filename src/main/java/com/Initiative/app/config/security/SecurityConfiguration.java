@@ -47,17 +47,17 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
 
                 .authorizeHttpRequests(authorize -> authorize
-
-                        .requestMatchers("/api/v1/demo/public").permitAll()
                         .requestMatchers("/api-docs").permitAll()
                         .requestMatchers("/docs").permitAll()
                         .requestMatchers("/api/v1/users/**").permitAll()
                         .requestMatchers("/api/v1/match").permitAll()
                         .requestMatchers("/api/v1/contact").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/api/v1/notifications/**").permitAll()
                         .requestMatchers("/api/v1/profiles").authenticated()
-
-                        .anyRequest().permitAll()
-
+                        .requestMatchers("/api/v1/messages/send").authenticated()
+                        .requestMatchers("/api/v1/messages/conversation/**").authenticated()
+                        .anyRequest().authenticated()
                 )
 
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
