@@ -20,10 +20,13 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/v1/messages")
-@RequiredArgsConstructor
 public class MessageRestController {
 
     private final MessageService messageService;
+
+  public MessageRestController (MessageService messageService) {
+    this.messageService = messageService;
+  }
 
     @GetMapping("/conversation/{user1Id}/{user2Id}")
     @Operation(
