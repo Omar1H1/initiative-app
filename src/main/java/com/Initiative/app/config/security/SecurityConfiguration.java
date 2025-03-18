@@ -38,35 +38,33 @@ public class SecurityConfiguration {
         return source;
     }
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api-docs").permitAll()
-                        .requestMatchers("/docs").permitAll()
-                        .requestMatchers("/api/v1/users/**").permitAll()
-                        .requestMatchers("/api/v1/match").permitAll()
-                        .requestMatchers("/api/v1/contact").permitAll()
-                        .requestMatchers("/ws/**").permitAll()
-                        .requestMatchers("/api/v1/notifications/**").permitAll()
-                        .requestMatchers("/api/v1/profiles").authenticated()
-                        .requestMatchers("/api/v1/messages/send").authenticated()
-                        .requestMatchers("/api/v1/messages/conversation/**").authenticated()
-                        .anyRequest().authenticated()
-                )
-
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(Customizer.withDefaults())
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers(
+                    "/api-docs",
+                    "/docs",
+                    "/api/v1/users/**",
+                    "/api/v1/sectors",
+                    "/api/v1/match",
+                    "/api/v1/contact",
+                    "/ws/**",
+                    "/api/v1/notifications/**",
+                    "/api/v1/users/resetpassword"
+                ).permitAll()
+                .requestMatchers(
+                    "/api/v1/profiles",
+                    "/api/v1/messages/send",
+                    "/api/v1/messages/conversation/**"
+                ).authenticated()
+                .anyRequest().authenticated()
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-
     }
-
 }

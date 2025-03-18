@@ -47,7 +47,7 @@ const Hero = () => {
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-relaxed">
             Nous facilitons la mise en relation des{" "}
             <span
-              className={`inline-block px-1 py-1 border-2 border-spacing-4 rounded-lg border-blue-500 transition-opacity duration-500 ${fade ? "opacity-100" : "opacity-0"}`}
+              className={`inline-block px-1 text-green-400 py-1 border-2 border-spacing-4 rounded-lg border-blue-500 transition-opacity duration-500 ${fade ? "opacity-100" : "opacity-0"}`}
               style={{
                 display: "inline-block",
                 minWidth: "120px",
@@ -60,7 +60,7 @@ const Hero = () => {
             <br />
             avec des{" "}
             <span
-              className={`inline-block px-2 py-1 border-2 mt-2 rounded-lg border-purple-500 transition-opacity duration-500 ${fade ? "opacity-100" : "opacity-0"}`}
+              className={`inline-block px-2 text-green-400 py-1 border-2 mt-2 rounded-lg border-purple-500 transition-opacity duration-500 ${fade ? "opacity-100" : "opacity-0"}`}
               style={{
                 display: "inline-block",
                 minWidth: "120px",

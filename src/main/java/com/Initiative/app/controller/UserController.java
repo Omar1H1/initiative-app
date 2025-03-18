@@ -276,7 +276,6 @@ public class UserController {
     }
 
     @PostMapping("/resetpassword")
-    @CrossOrigin(origins = "*", allowedHeaders = "*", methods = RequestMethod.POST)
     @Operation(
             summary = "Reset user password",
             description = "Handles password reset requests by updating the user's password. " +

@@ -316,7 +316,7 @@ public class MatchingController {
         Match match = matchingService.findMatchById(matchId)
                 .orElseThrow(() -> new EntityNotFoundException("Match not found with ID: " + matchId));
 
-        matchingService.hasBeenSeen(matchId);
+        matchingService.markAsSeen(matchId);
 
         return ResponseEntity.ok().build();
     }

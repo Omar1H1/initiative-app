@@ -2,6 +2,7 @@ package com.Initiative.app.controller;
 
 import com.Initiative.app.dto.UserDTO;
 import com.Initiative.app.enums.RoleEnum;
+import com.Initiative.app.enums.SectorsOfActivity;
 import com.Initiative.app.model.User;
 import com.Initiative.app.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -63,6 +65,14 @@ public class HomeController {
         List<UserDTO> porteurs = userService.getUsersByRole(RoleEnum.PORTEUR);
         return ResponseEntity.ok(porteurs);
     }
+
+
+
+  @GetMapping("/sectors")
+    public List<SectorsOfActivity> getSectors() {
+        return Arrays.asList(SectorsOfActivity.values());
+    }
+
 
 
 }

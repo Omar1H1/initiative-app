@@ -159,7 +159,7 @@ const Notification = () => {
                   </>
                 )}
                 <IoTrashBinOutline
-                  className="text-red-500 cursor-pointer dark:hover:bg-white dark:hover:scale-125 dark:rounded-sm"
+                  className="text-red-500 cursor-pointer hover:bg-blue-300 hover:scale-125 dark:hover:bg-white dark:hover:scale-125 dark:rounded-sm"
                   onClick={(e) => handleRemoveNotification(e, notification.id)}
                 />
               </div>
