@@ -24,6 +24,8 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     setToken(null);
     navigate("/");
   };
@@ -54,7 +56,13 @@ const Navbar = () => {
               <GrUserAdmin size={28} className="inline-block ml-2" />
             </li>
           ) : null}
-          <li className="bg-blue-500 text-white font-bold p-4 hover:bg-blue-600 rounded-lg m-2 cursor-pointer">
+          <li
+            onClick={() => {
+              navigate("/profile");
+              setNav(false);
+            }}
+            className="bg-blue-500 text-white font-bold p-4 hover:bg-blue-600 rounded-lg m-2 cursor-pointer"
+          >
             Profile
             <CiUser size={30} className="inline-block ml-2" />
           </li>

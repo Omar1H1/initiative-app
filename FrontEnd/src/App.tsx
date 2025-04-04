@@ -14,8 +14,9 @@ import { useEffect } from "react";
 import AdminPanel from "./components/AdminPanel.tsx";
 import Signup from "./auth/Signup.tsx";
 import Notification from "./components/Notification.tsx";
-import {Toaster} from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import WebSocketTester from "./components/WebSocketTester.tsx";
+import Profile from "./components/Profile.tsx";
 
 const App = () => {
   const setToken = useSetAtom(loginAtom);
@@ -40,18 +41,18 @@ const App = () => {
         <Route path="/passwordrecovery" element={<PasswordRecovery />} />
         <Route path="/passwordreset" element={<ResetPassword />} />
         <Route path="/panel" element={<AdminPanel />} />
-        <Route path="test" element={<Signup />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster
-          position="top-center"
-          toastOptions={{
-            className: 'bg-white text-black dark:bg-gray-800 dark:text-white',
-            style: {
-              border: '1px solid #D1D5DB',
-              padding: '16px',
-            }
-          }}
+        position="top-center"
+        toastOptions={{
+          className: "bg-white text-black dark:bg-gray-800 dark:text-white",
+          style: {
+            border: "1px solid #D1D5DB",
+            padding: "16px",
+          },
+        }}
       />
     </BrowserRouter>
   );
