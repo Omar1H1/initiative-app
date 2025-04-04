@@ -9,7 +9,6 @@ const ThemeToggle = () => {
 
   const handleToggle = () => {
     const newTheme = theme === "light" ? "dark" : "light";
-    // @ts-ignore
     setTheme(newTheme);
 
     if (newTheme === "dark") {
@@ -23,7 +22,6 @@ const ThemeToggle = () => {
 
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme") || "light";
-    // @ts-ignore
     setTheme(storedTheme);
 
     if (storedTheme === "dark") {

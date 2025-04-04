@@ -7,7 +7,7 @@ const api = new Axios().getInstance();
 
 const ResetPassword = () => {
   const queryParameters = new URLSearchParams(window.location.search);
-  const pathCode: any = queryParameters.get("code");
+  const pathCode: string = queryParameters.get("code") as string;
 
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
