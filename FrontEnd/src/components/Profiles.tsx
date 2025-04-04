@@ -82,7 +82,6 @@ const Profiles = () => {
     );
   };
 
-  // @ts-ignore
   return (
     <div className="p-4 relative dark:bg-gray-900 h-screen">
       <h1 className="text-2xl font-bold mb-4 px-20 flex items-center justify-center py-20 text-gray-800 dark:text-white">
@@ -94,15 +93,16 @@ const Profiles = () => {
             profile.isActive && (
               <div
                 key={profile.id}
-                className={`absolute w-full sm:w-[90%] md:w-[70%] p-6 bg-white rounded-xl shadow-2xl transform transition-all duration-300 ease-in-out dark:bg-gray-800 ${index === profiles.length - 1
+                className={`absolute w-full sm:w-[90%] md:w-[70%] p-6 bg-white rounded-xl shadow-2xl transform transition-all duration-300 ease-in-out dark:bg-gray-800 ${
+                  index === profiles.length - 1
                     ? "scale-100 z-10"
                     : "scale-90 z-0"
-                  }`}
+                }`}
               >
                 <img
                   src={photos[profile.id] ?? "https://via.placeholder.com/150"}
                   alt={`${profile.firstName} ${profile.lastName}`}
-                  className="w-full h-48 object-fill rounded-lg"
+                  className="w-fit h-48 object-fill rounded-lg"
                 />
                 <div className="mt-4">
                   <div className="flex items-center pt-2 pb-2">
