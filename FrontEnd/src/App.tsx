@@ -12,10 +12,8 @@ import ResetPassword from "./auth/ResetPassword.tsx";
 import Home from "./components/Home.tsx";
 import { useEffect } from "react";
 import AdminPanel from "./components/AdminPanel.tsx";
-import Signup from "./auth/Signup.tsx";
 import Notification from "./components/Notification.tsx";
 import { Toaster } from "react-hot-toast";
-import WebSocketTester from "./components/WebSocketTester.tsx";
 import Profile from "./components/Profile.tsx";
 
 const App = () => {
