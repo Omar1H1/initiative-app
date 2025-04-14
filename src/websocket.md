@@ -1,6 +1,8 @@
 uri : ws://localhost:8080/ws
 
-{ "Authorization" : "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTc0NDYzNjk1MCwiZXhwIjoxNzQ0NzIzMzUwfQ.t0f7LtyAqvDt8j_e2T9LfsQaw_tSC1cWy2TumkNhjyw" }
+/user/{receiverId}/queue/messages
+
+{ "Authorization" : "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTc0NDYzODk4NCwiZXhwIjoxNzQ0NzI1Mzg0fQ.gwuelwhBDrl0fiQ3EsAMA_ddPFp1RnZg1nOPc0x4XLU" }
 
 {
 "sender": 1,
