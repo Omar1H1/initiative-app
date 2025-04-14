@@ -55,6 +55,7 @@ public class MessageController {
   @MessageMapping("/send")
   public void sendMessage(Message message) throws Exception {
     mongoService.insert(message.getSender(), message.getReceiver(), message.getContent(), message.getTimestamp());
+    template.convertAndSend("/newMessage", message);
   }
 
 
