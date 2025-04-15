@@ -21,10 +21,12 @@ public class MessageController {
 
   private MongoService mongoService;
   private SimpMessagingTemplate template;
+  private final NotificationController notificationController;
 
-  public MessageController(MongoService mongoService, SimpMessagingTemplate template) {
+  public MessageController(MongoService mongoService, SimpMessagingTemplate template, NotificationController notificationController) {
     this.mongoService = mongoService;
     this.template = template;
+    this.notificationController = notificationController;
   }
 
 
@@ -41,6 +43,8 @@ public class MessageController {
 
     // let the the runtime figure it out, i'm too lazy smh
     Document insertedMessage = mongoService.insert(message);
+
+    notificationController.sendMessageNotification(message);
 
     // this will create /user/r_id/queue/messages, i don't know why !!
     template.convertAndSendToUser (String.valueOf(message.getReceiver()), "/queue/messages", insertedMessage);
