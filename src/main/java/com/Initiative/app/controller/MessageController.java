@@ -3,9 +3,14 @@ package com.Initiative.app.controller;
 import org.bson.Document;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 
+import org.springframework.security.core.Authentication;
+
+
 import com.Initiative.app.dto.MessageDTO;
+import com.Initiative.app.model.User;
 import com.Initiative.app.service.MongoService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +29,11 @@ public class MessageController {
 
 
   @MessageMapping("/send")
-  public void sendMessage(MessageDTO message) throws Exception {
+  public void sendMessage(MessageDTO message,Authentication authentication) throws Exception {
+    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    User authenticatedUser  = (User ) userDetails;
+
+    message.setSender(authenticatedUser.getId());
 
     // there's a better way maybe hide it inside the object init !!
     String conversationId = MessageDTO.generateConversationId(message.getSender(), message.getReceiver());
