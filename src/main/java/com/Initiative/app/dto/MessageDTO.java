@@ -1,28 +1,23 @@
-package com.Initiative.app.model;
+package com.Initiative.app.dto;
 
-import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDateTime;
 
-@Data
+import org.bson.types.ObjectId;
+
+import lombok.Builder;
+import lombok.Data;
+
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
-@Table(name = "messages")
-public class Message {
+@Data
+public class MessageDTO {
 
-    @Id
-    @GeneratedValue
-    private Long id;
 
-    @Column(nullable = false)
+    private ObjectId id;
+
     private Long sender;
 
-    @Column(nullable = false)
     private Long receiver;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @Builder.Default
@@ -31,7 +26,6 @@ public class Message {
     @Builder.Default
     private boolean read = false;
 
-    @Column(nullable = false)
     private String conversationId;
 
     public static String generateConversationId(Long userId1, Long userId2) {
@@ -39,4 +33,4 @@ public class Message {
                 ? userId1 + "_" + userId2
                 : userId2 + "_" + userId1;
     }
-}
+} 
