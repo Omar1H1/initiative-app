@@ -37,7 +37,7 @@ const Messages = () => {
       fetchConversation(convId);
       fetchTalkingWithIn(Number(userId));
     }
-  }, [userId, logged?.id]);
+  }, [userId, logged?.id, convId, conversation]);
 
   const fetchProfilePhoto = async (
     id: number,
@@ -170,7 +170,9 @@ const Messages = () => {
 
       <div className="flex-grow bg-gray-100 dark:bg-gray-700 my-2 p-4 overflow-y-auto rounded-lg shadow-inner">
         {conversation.length === 0 ? (
-          <div className="text-center text-gray-500">Start a conversation!</div>
+          <div className="text-center text-black dark:text-white">
+            Dis bonjour à {chatWith?.firstName} .... 😊
+          </div>
         ) : (
           conversation
             .slice()
