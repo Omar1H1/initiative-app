@@ -95,10 +95,19 @@ public class UserController {
             AuthenticationResponse response = authenticationService.register(userToRegister);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<User> getUserInfo(@PathVariable Long id) {
+    
+    User user = userService.getUserById(id).orElseThrow();
+
+    return ResponseEntity.ok(user);
+  }
+
 
     @GetMapping("/{id}/profile-image")
     @Operation(

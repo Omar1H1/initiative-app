@@ -35,7 +35,10 @@ const Profile: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 sm:p-8 w-full max-w-md">
         <div className="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto rounded-full overflow-hidden mb-4 sm:mb-6">
           <img
-            src={`https://ui-avatars.com/api/?name=${logged?.firstName}+${logged?.lastName}&background=random&font-size=0.5&rounded=true`}
+            src={
+              photo ??
+              `https://ui-avatars.com/api/?name=${logged?.firstName}+${logged?.lastName}&background=random&font-size=0.5&rounded=true`
+            }
             alt={`${logged?.firstName} ${logged?.lastName}`}
             className="w-full h-full object-cover"
           />
