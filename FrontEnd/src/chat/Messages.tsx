@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { Axios } from "../service/Axios";
 import { User } from "../types/User";
 
+import { IoMdSend } from "react-icons/io";
+
 const api = new Axios().getInstance();
 
 const formatDate = (dateString: string) => {
@@ -17,10 +19,12 @@ const formatDate = (dateString: string) => {
   const isYesterday = messageDate.toDateString() === yesterday.toDateString();
 
   if (isToday) {
-    return messageDate.toLocaleTimeString([], {
+    return `Aujourd'hui, ${messageDate.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
-    });
+      hour12: false,
+      timeZone: "Europe/Paris",
+    })}`;
   } else if (isYesterday) {
     return "hier";
   } else {
@@ -30,6 +34,8 @@ const formatDate = (dateString: string) => {
       day: "2-digit",
       hour: "2-digit",
       minute: "2-digit",
+      hour12: false,
+      timeZone: "Europe/Paris",
     });
   }
 };
@@ -71,7 +77,7 @@ const Messages = () => {
     } catch (err) {
       console.error("Error fetching profile image:", err);
       setPhotoState(
-        `https://ui-avatars.com/api/?name=User &background=random&font-size=0.5&rounded=true`,
+        `https://ui-avatars.com/api/?name=User  &background=random&font-size=0.5&rounded=true`,
       );
     }
   };
@@ -95,31 +101,31 @@ const Messages = () => {
   };
 
   return (
-    <div className="flex-grow h-full flex flex-col">
-      <div className="w-full h-15 p-1 bg-purple-600 dark:bg-gray-800 shadow-md rounded-xl rounded-bl-none rounded-br-none">
-        <div className="flex p-2 align-middle items-center">
-          <div className="border rounded-lg border-transparent p-1/2">
+    <div className="flex-grow w-full max-w-4xl mx-auto flex flex-col h-3/4">
+      <div className="w-full p-4 bg-purple-600 dark:bg-gray-800 shadow-lg rounded-xl">
+        <div className="flex items-center">
+          <div className="flex-shrink-0">
             <img
               src={
                 partnerPhoto ??
-                `https://ui-avatars.com/api/?name=User &background=random&font-size=0.5&rounded=true`
+                `https://ui-avatars.com/api/?name=${chatWith?.firstName}+${chatWith?.lastName}&background=random&font-size=0.5&rounded=true`
               }
               alt="User "
-              className="w-14 h-14 object-cover rounded-lg"
+              className="w-12 h-12 object-cover rounded-full border-2 border-white"
             />
           </div>
-          <div className="flex-grow p-2">
-            <div className="text-md text-gray-50 font-semibold">
+          <div className="ml-4">
+            <div className="text-lg text-white font-semibold">
               {chatWith?.firstName} {chatWith?.lastName}
             </div>
             <div className="flex items-center">
               <div className="w-2 h-2 bg-green-300 rounded-full"></div>
-              <div className="text-xs text-gray-50 ml-1">Online</div>
+              <div className="text-sm text-gray-200 ml-1">Online</div>
             </div>
           </div>
         </div>
       </div>
-      <div className="w-full h-28 flex-grow bg-gray-100 dark:bg-gray-900 my-2 p-2 overflow-y-auto">
+      <div className="flex-grow bg-gray-100 dark:bg-gray-700 my-2 p-4 overflow-y-auto rounded-lg shadow-inner">
         {conversation.length === 0 ? (
           <div className="text-center text-gray-500">Start a conversation!</div>
         ) : (
@@ -133,30 +139,28 @@ const Messages = () => {
               >
                 {message.sender !== logged?.id && (
                   <img
-                    className="w-8 h-8 m-3 rounded-full"
+                    className="w-8 h-8 m-2 rounded-full"
                     src={
                       partnerPhoto ??
-                      `https://ui-avatars.com/api/?name=User  &background=random&font-size=0.5&rounded=true`
+                      `https://ui-avatars.com/api/?name=User   &background=random&font-size=0.5&rounded=true`
                     }
                     alt="avatar"
                   />
                 )}
                 <div
-                  className={`p-3 ${message.sender === logged?.id ? "bg-blue-600 text-white" : "bg-gray-800"} mx-3 my-1 rounded-2xl ${message.sender === logged?.id ? "rounded-bl-none" : "rounded-br-none"} sm:w-3/4 md:w-3/6`}
+                  className={`p-3 ${message.sender === logged?.id ? "bg-blue-600 text-white" : "bg-gray-800 text-gray-200"} mx-3 my-1 rounded-2xl ${message.sender === logged?.id ? "rounded-bl-none" : "rounded-br-none"} sm:w-3/4 md:w-2/3`}
                 >
-                  <div className="text-white dark:text-gray-200">
-                    {message.content}
-                  </div>
-                  <div className="text-xs text-white mt-1 text-right">
+                  <div className="text-sm">{message.content}</div>
+                  <div className="text-xs text-gray-300 mt-1 text-right">
                     {formatDate(message.date)}
                   </div>
                 </div>
                 {message.sender === logged?.id && (
                   <img
-                    className="w-8 h-8 m-3 rounded-full"
+                    className="w-8 h-8 m-2 rounded-full"
                     src={
                       myPhoto ??
-                      `https://ui-avatars.com/api/?name=User  &background=random&font-size=0.5&rounded=true`
+                      `https://ui-avatars.com/api/?name=${logged?.firstName}+${logged?.lastName}&background=random&font-size=0.5&rounded=true`
                     }
                     alt="avatar"
                   />
@@ -164,6 +168,18 @@ const Messages = () => {
               </div>
             ))
         )}
+        <div className="mt-0 sticky bottom-0 bg-transparent p-2 z-10">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Votre message"
+              className="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none dark:text-black focus:ring-2 focus:ring-purple-600"
+            />
+            <button className="dark:text-white text-purple-900 hover:text-purple-700">
+              <IoMdSend size={24} />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
