@@ -9,24 +9,11 @@ const DateService = (dateString: string) => {
   const isYesterday = messageDate.toDateString() === yesterday.toDateString();
 
   if (isToday) {
-    return `Aujourd'hui, ${messageDate.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZone: "Europe/Paris",
-    })}`;
+    return `Aujourd'hui, ${messageDate.toUTCString().split(" ")[4]}`;
   } else if (isYesterday) {
     return "hier";
   } else {
-    return messageDate.toLocaleString([], {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZone: "Europe/Paris",
-    });
+    return messageDate.toUTCString();
   }
 };
 

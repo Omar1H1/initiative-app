@@ -8,8 +8,6 @@ import DateService from "../service/DateService";
 
 const api = new Axios().getInstance();
 
-const formatDate = DateService;
-
 const Messages = () => {
   const loggedUser = localStorage.getItem("user");
   const logged: User | null = loggedUser ? JSON.parse(loggedUser) : null;
@@ -24,6 +22,7 @@ const Messages = () => {
   const messageEndRef = useRef<HTMLDivElement | null>(null);
   const stompClient = useRef<Client | null>(null);
   const [isStompConnected, setIsStompConnected] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const convId =
     Number(userId) < Number(logged?.id)
@@ -37,7 +36,7 @@ const Messages = () => {
       fetchConversation(convId);
       fetchTalkingWithIn(Number(userId));
     }
-  }, [userId, logged?.id, convId, conversation]);
+  }, [userId, logged?.id, convId]);
 
   const fetchProfilePhoto = async (
     id: number,
@@ -59,9 +58,16 @@ const Messages = () => {
   const fetchConversation = async (convId: string) => {
     try {
       const response = await api.get(`/api/v1/messages/conversation/${convId}`);
-      setConversation(response.data);
+
+      const sortedMessages = response.data.sort(
+        (a: any, b: any) =>
+          new Date(a.date).getTime() - new Date(b.date).getTime(),
+      );
+      setConversation(sortedMessages);
+      setIsInitialLoad(false);
     } catch (err) {
       console.error("Error fetching conversation:", err);
+      setIsInitialLoad(false);
     }
   };
 
@@ -88,7 +94,13 @@ const Messages = () => {
         setIsStompConnected(true);
         client.subscribe(`/user/${logged.id}/queue/messages`, (message) => {
           const body = JSON.parse(message.body);
-          setConversation((prev) => [...prev, body]);
+          if (body.receiver === logged.id && body.sender === Number(userId)) {
+            setConversation((prev) => [...prev, body]);
+
+            setTimeout(() => {
+              messageEndRef.current?.scrollIntoView({ behavior: "auto" });
+            }, 50);
+          }
         });
       },
       onDisconnect: () => setIsStompConnected(false),
@@ -106,7 +118,7 @@ const Messages = () => {
     return () => {
       if (client.connected) client.deactivate();
     };
-  }, [logged?.id, token]);
+  }, [logged?.id, token, userId]);
 
   const handleSend = () => {
     if (
@@ -118,9 +130,12 @@ const Messages = () => {
       return;
     }
 
+    const currentDate = new Date().toISOString();
+
     const msgObj = {
       receiver: Number(userId),
       content: newMessage,
+      timestamp: DateService(currentDate),
     };
 
     stompClient.current.publish({
@@ -131,16 +146,25 @@ const Messages = () => {
       },
     });
 
-    setConversation((prev) => [
-      ...prev,
-      { ...msgObj, sender: logged?.id, date: new Date().toISOString() },
-    ]);
+    const newMsg = {
+      ...msgObj,
+      sender: logged?.id,
+      date: currentDate,
+    };
+
+    setConversation((prev) => [...prev, newMsg]);
     setNewMessage("");
+
+    setTimeout(() => {
+      messageEndRef.current?.scrollIntoView({ behavior: "auto" });
+    }, 50);
   };
 
   useEffect(() => {
-    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [conversation]);
+    if (!isInitialLoad && conversation.length > 0) {
+      messageEndRef.current?.scrollIntoView({ behavior: "auto" });
+    }
+  }, [isInitialLoad, conversation.length]);
 
   return (
     <div className="flex-grow w-full max-w-4xl mx-auto flex flex-col h-[90vh]">
@@ -174,82 +198,78 @@ const Messages = () => {
             Dis bonjour à {chatWith?.firstName} .... 😊
           </div>
         ) : (
-          conversation
-            .slice()
-            .reverse()
-            .map((message, index) => (
+          conversation.map((message, index) => (
+            <div
+              key={index}
+              className={`flex items-end w-full ${
+                message.sender === logged?.id ? "justify-end" : "justify-start"
+              }`}
+            >
+              {message.sender !== logged?.id && (
+                <img
+                  className="w-8 h-8 m-2 rounded-full"
+                  src={
+                    partnerPhoto ??
+                    `https://ui-avatars.com/api/?name=User &background=random&font-size=0.5&rounded=true`
+                  }
+                  alt="avatar"
+                />
+              )}
               <div
-                key={index}
-                className={`flex items-end w-full ${
+                className={`p-3 ${
                   message.sender === logged?.id
-                    ? "justify-end"
-                    : "justify-start"
-                }`}
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-800 text-gray-200"
+                } mx-3 my-1 rounded-2xl ${
+                  message.sender === logged?.id
+                    ? "rounded-bl-none"
+                    : "rounded-br-none"
+                } sm:w-3/4 md:w-2/3`}
               >
-                {message.sender !== logged?.id && (
-                  <img
-                    className="w-8 h-8 m-2 rounded-full"
-                    src={
-                      partnerPhoto ??
-                      `https://ui-avatars.com/api/?name=User &background=random&font-size=0.5&rounded=true`
-                    }
-                    alt="avatar"
-                  />
-                )}
-                <div
-                  className={`p-3 ${
-                    message.sender === logged?.id
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-800 text-gray-200"
-                  } mx-3 my-1 rounded-2xl ${
-                    message.sender === logged?.id
-                      ? "rounded-bl-none"
-                      : "rounded-br-none"
-                  } sm:w-3/4 md:w-2/3`}
-                >
-                  <div className="text-sm">{message.content}</div>
-                  <div className="text-xs text-gray-300 mt-1 text-right">
-                    {formatDate(message.date)}
-                  </div>
+                <div className="text-sm">{message.content}</div>
+                <div className="text-xs text-gray-300 mt-1 text-right">
+                  {DateService(message.date)}
                 </div>
-                {message.sender === logged?.id && (
-                  <img
-                    className="w-8 h-8 m-2 rounded-full"
-                    src={
-                      myPhoto ??
-                      `https://ui-avatars.com/api/?name=${logged?.firstName}+${logged?.lastName}&background=random&font-size=0.5&rounded=true`
-                    }
-                    alt="avatar"
-                  />
-                )}
               </div>
-            ))
+              {message.sender === logged?.id && (
+                <img
+                  className="w-8 h-8 m-2 rounded-full"
+                  src={
+                    myPhoto ??
+                    `https://ui-avatars.com/api/?name=${logged?.firstName}+${logged?.lastName}&background=random&font-size=0.5&rounded=true`
+                  }
+                  alt="avatar"
+                />
+              )}
+            </div>
+          ))
         )}
         <div ref={messageEndRef} />
-        <div className="mt-4 sticky bottom-0 bg-transparent p-2 z-10">
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Votre message"
-              className="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none dark:text-black focus:ring-2 focus:ring-purple-600"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleSend();
-              }}
-            />
-            <button
-              onClick={handleSend}
-              className={`${
-                isStompConnected
-                  ? "text-purple-900 hover:text-purple-700"
-                  : "opacity-50 cursor-not-allowed"
-              }`}
-              disabled={!isStompConnected}
-            >
-              <IoMdSend size={24} />
-            </button>
-          </div>
+      </div>
+
+      <div className="mt-4 bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg">
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            placeholder="Votre message"
+            className="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-purple-600"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSend();
+            }}
+          />
+          <button
+            onClick={handleSend}
+            className={`p-2 rounded-full ${
+              isStompConnected
+                ? "bg-purple-600 text-white hover:bg-purple-700"
+                : "bg-gray-400 opacity-50 cursor-not-allowed"
+            }`}
+            disabled={!isStompConnected}
+          >
+            <IoMdSend size={20} />
+          </button>
         </div>
       </div>
     </div>
