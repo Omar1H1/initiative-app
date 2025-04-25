@@ -54,6 +54,7 @@ public class SecurityConfiguration {
                     "/api/v1/users/**",
                     "/api/v1/sectors",
                     "/api/v1/match",
+                    "/api/v1/match/check/**",
                     "/api/v1/contact",
                     "/ws/**",
                     "/api/v1/notifications/**",

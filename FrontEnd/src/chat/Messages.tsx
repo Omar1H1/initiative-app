@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
 import { Axios } from "../service/Axios";
 import { User } from "../types/User";
 import { Client } from "@stomp/stompjs";
@@ -13,6 +13,7 @@ const Messages = () => {
   const logged: User | null = loggedUser ? JSON.parse(loggedUser) : null;
   const token = sessionStorage.getItem("token") || "";
   const { userId } = useParams<{ userId: string }>();
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const [chatWith, setChatWith] = useState<User | null>(null);
   const [partnerPhoto, setPartnerPhoto] = useState<string | null>(null);
@@ -30,13 +31,30 @@ const Messages = () => {
       : `${logged?.id}_${userId}`;
 
   useEffect(() => {
+    const checkMatchExists = async () => {
+      try {
+        const response = await api.get(
+          `/api/v1/match/check/${logged?.id}/${userId}`,
+        );
+        console.log(response);
+
+        if (!response.data.matched) {
+          navigate("/404"); // Redirect to 404 if no match exists
+        }
+      } catch (error) {
+        console.error("Error checking match:", error);
+        navigate("/404"); // Redirect to 404 on error
+      }
+    };
+
     if (userId) {
+      checkMatchExists(); // Check if match exists
       fetchProfilePhoto(Number(userId), setPartnerPhoto);
       if (logged?.id) fetchProfilePhoto(Number(logged.id), setMyPhoto);
       fetchConversation(convId);
       fetchTalkingWithIn(Number(userId));
     }
-  }, [userId, logged?.id, convId]);
+  }, [userId, logged?.id, convId, navigate]); // Add navigate to dependencies
 
   const fetchProfilePhoto = async (
     id: number,
@@ -50,7 +68,7 @@ const Messages = () => {
       setPhotoState(imageUrl);
     } catch {
       setPhotoState(
-        "https://ui-avatars.com/api/?name=User &background=random&font-size=0.5&rounded=true",
+        "https://ui-avatars.com/api/?name=User  &background=random&font-size=0.5&rounded=true",
       );
     }
   };

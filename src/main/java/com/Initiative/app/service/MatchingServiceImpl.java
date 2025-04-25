@@ -67,4 +67,9 @@ public class MatchingServiceImpl {
         match.ifPresentOrElse(m -> m.setSeen(true), 
             () -> { throw new IllegalArgumentException("Match not found with id: " + id); });
     }
+
+    public boolean areUsersMatched(User userA, User userB) {
+        return matchingRepository.existsByDemanderAndReceiver(userA, userB) ||
+               matchingRepository.existsByDemanderAndReceiver(userB, userA);
+    }
 }

@@ -322,5 +322,52 @@ public class MatchingController {
     }
 
 
+    /**
+     * Checks if two users are matched.
+     *
+     * @param userIdA the ID of the first user
+     * @param userIdB the ID of the second user
+     * @return a response indicating whether the users are matched
+     */
+    @GetMapping("/api/v1/match/check/{userIdA}/{userIdB}")
+    @Operation(
+            summary = "Check if two users are matched",
+            description = "This endpoint checks if two users are already matched.",
+            parameters = {
+                    @Parameter(name = "userIdA", description = "The ID of the first user", required = true),
+                    @Parameter(name = "userIdB", description = "The ID of the second user", required = true)
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully checked if users are matched",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            example = "{\"matched\": true}"
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found - One or both users do not exist",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            example = "{\"error\": \"User  not found\"}"
+                                    )
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<?> checkIfUsersMatched(@PathVariable Long userIdA, @PathVariable Long userIdB) {
+        User userA = userService.getUserById(userIdA)
+                .orElseThrow(() -> new EntityNotFoundException("User  not found with ID: " + userIdA));
+        User userB = userService.getUserById(userIdB)
+                .orElseThrow(() -> new EntityNotFoundException("User  not found with ID: " + userIdB));
+
+        boolean matched = matchingService.areUsersMatched(userA, userB);
+        return ResponseEntity.ok().body("{\"matched\": " + matched + "}");
+    }
 
 }
