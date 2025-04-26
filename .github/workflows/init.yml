@@ -1,53 +1,56 @@
 name: Build and Run Tests
-
 on:
   push:
-
 permissions:
   contents: write
-
 jobs:
-  get-version:
-    uses: shiipou/github-actions/.github/workflows/get-version.yml@main
-    with:
-      release-branches: "^(main)$"
 
-  install-java:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: "21"
-
+      
       - name: Install and Initialize PostgreSQL
         uses: ikalnytskyi/action-setup-postgres@v6
         with:
           username: postgres
           password: postgres
           database: app
-          port: 5432
+          port: 5435
           postgres-version: "16"
           ssl: "on"
         id: postgres
-
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
+      
+      - name: Setup MongoDB
+        uses: supercharge/mongodb-github-action@1.10.0
         with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+          mongodb-version: '6.0'
+          mongodb-replica-set: rs0
+          mongodb-port: 27017
+      
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Omar1H1_initiative-app
