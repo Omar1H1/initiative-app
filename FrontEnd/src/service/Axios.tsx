@@ -4,9 +4,7 @@ export class Axios {
     private readonly axiosInstance: AxiosInstance;
 
     constructor() {
-        this.axiosInstance = axios.create({
-            baseURL: 'http://localhost:8080',
-        });
+        this.axiosInstance = axios.create();
 
         this.axiosInstance.interceptors.request.use(
             (config: AxiosRequestConfig): AxiosRequestConfig => {

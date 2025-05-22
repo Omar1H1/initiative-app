@@ -1,0 +1,43 @@
+services:
+  api:
+    image: registry.nocturlab.fr/ohamad/ttm_spring_api
+    build:
+      context: .
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/app
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    networks:
+      - app
+      - db
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=app
+    networks:
+      - db 
+  front:
+    image: registry.nocturlab.fr/ohamad/ttm_react
+    depends_on:
+      - api
+    networks:
+      - traefik
+      - app
+    labels: 
+      - traefik.enable=true
+      - traefik.http.routers.frontomar.rule=Host(`omar.nocturlab.fr`)
+      - traefik.http.services.frontomar.loadbalancer.server.port=80
+    environment:
+      API_V1_URL: http://api:8080
+      
+networks:
+  traefik:
+    external: true
+    name: traefik_default
+  db:
+  app:

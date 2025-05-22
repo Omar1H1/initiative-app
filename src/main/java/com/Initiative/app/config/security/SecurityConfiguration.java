@@ -33,6 +33,7 @@ public class SecurityConfiguration {
     configuration.setAllowCredentials(true);
     configuration.addAllowedOrigin("http://localhost:5173");
     configuration.addAllowedOrigin("http://localhost:3000");
+    configuration.addAllowedOrigin("https://omar.nocturlab.fr");
     configuration.addAllowedOrigin("https://jiangxy.github.io");
     configuration.addAllowedHeader("*");
     configuration.addAllowedMethod("*");
