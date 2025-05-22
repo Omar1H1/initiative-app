@@ -1,9 +1,14 @@
-name: Build and Run Tests
+
+name: Build Spring and React
 
 on:
   push:
+    branches:
+      - dockerfiles
+
 permissions:
   contents: write
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -17,43 +22,108 @@ jobs:
           distribution: "temurin"
           java-version: "21"
 
-      - name: Install and Initialize PostgreSQL
-        uses: ikalnytskyi/action-setup-postgres@v6
+      - name: Build Spring Boot Application
+        run: mvn package -Dmaven.test.skip=true -Djacoco.skip=true
+
+      - name: Build React Application
+        run: |
+          cd FrontEnd
+          npm install
+          npm run build
+
+      - name: Create Spring Boot Dockerfile for image build
+        run: |
+          echo 'FROM eclipse-temurin:21 AS builder-0' > Dockerfile
+          echo '' >> Dockerfile
+          echo 'WORKDIR /app' >> Dockerfile
+          echo '' >> Dockerfile
+          echo 'COPY env.properties ./env.properties' >> Dockerfile
+          echo 'COPY target/*.jar ./app.jar' >> Dockerfile
+          echo 'COPY src/main/resources/images ./src/main/resources/images' >> Dockerfile
+          echo '' >> Dockerfile
+          echo 'FROM eclipse-temurin:21-jre' >> Dockerfile
+          echo '' >> Dockerfile
+          echo 'WORKDIR /app' >> Dockerfile
+          echo '' >> Dockerfile
+          echo 'COPY --from=builder-0 /app/app.jar ./app.jar' >> Dockerfile
+          echo 'COPY --from=builder-0 /app/env.properties ./env.properties' >> Dockerfile
+          echo 'COPY --from=builder-0 /app/src/main/resources/images ./src/main/resources/images' >> Dockerfile
+          echo '' >> Dockerfile
+          echo 'EXPOSE 8080' >> Dockerfile
+          echo '' >> Dockerfile
+          echo 'ENTRYPOINT ["java", "-jar", "app.jar"]' >> Dockerfile
+
+      - name: Create React Dockerfile for image build
+        run: |
+          cd FrontEnd
+          echo 'FROM nginx:1.27' > Dockerfile
+          echo '' >> Dockerfile
+          echo 'RUN rm /etc/nginx/conf.d/default.conf' >> Dockerfile
+          echo '' >> Dockerfile
+          echo 'COPY ./dist/ /usr/share/nginx/html' >> Dockerfile
+          echo 'COPY ./nginx/app.conf.template /etc/nginx/templates/app.conf.template' >> Dockerfile
+          cd ..
+
+      - name: Build and Push Spring Docker Image
+        run: |
+          docker build -t registry.nocturlab.fr/ohamad/ttm_spring_api .
+          docker push registry.nocturlab.fr/ohamad/ttm_spring_api
+
+      - name: Build and Push React Docker Image
+        run: |
+          cd FrontEnd
+          docker build -t registry.nocturlab.fr/ohamad/ttm_react .
+          docker push registry.nocturlab.fr/ohamad/ttm_react
+          cd ..
+
+      - name: Execute remote SSH
+        uses: appleboy/ssh-action@v1
         with:
-          username: postgres
-          password: postgres
-          database: app
-          port: 5435
-          postgres-version: "16"
-          ssl: "on"
-        id: postgres
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER}}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd initiative-app
+            docker compose pull
+            docker compose up -d 
+      # - name: Install and Initialize PostgreSQL
+      #   uses: ikalnytskyi/action-setup-postgres@v6
+      #   with:
+      #     username: postgres
+      #     password: postgres
+      #     database: app
+      #     port: 5432
+      #     postgres-version: "16"
+      #     ssl: "on"
+      #   id: postgres
+      #
+      # - name: Setup MongoDB
+      #   uses: supercharge/mongodb-github-action@1.10.0
+      #   with:
+      #     mongodb-version: "6.0"
+      #     mongodb-port: 27017
+      #
+      # - name: Cache Maven packages
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~/.m2
+      #     key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: ${{ runner.os }}-m2
+      #
+      # - name: Cache SonarQube packages
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~/.sonar/cache
+      #     key: ${{ runner.os }}-sonar
+      #     restore-keys: ${{ runner.os }}-sonar
+      #
+      # - name: Build Project
+      #   run: mvn clean install -DskipTests
+      #
+      # - name: Sonar Scan
+      #   uses: sonarsource/sonarqube-scan-action@master
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: "https://sonarcloud.io/"
 
-      - name: Setup MongoDB
-        uses: supercharge/mongodb-github-action@1.10.0
-        with:
-          mongodb-version: "6.0"
-          mongodb-replica-set: rs0
-          mongodb-port: 27017
-
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
-      - name: Build Project
-        run: mvn clean install -DskipTests
-
-      - name: Sonar Scan
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: "https://sonarcloud.io/"

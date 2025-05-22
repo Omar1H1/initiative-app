@@ -126,7 +126,7 @@ public class AuthenticationService {
                 "        <div class='content'>" +
                 "            <p>Bonjour <strong>" + user.getFirstName() + "</strong>,</p>" +
                 "            <p>Nous sommes ravis de vous accueillir ! Cliquez sur le bouton ci-dessous pour activer votre compte :</p>" +
-                "            <a href='http://localhost:5173/signup/submitcode?code=" + user.getActivationCode() + "' class='btn'>Activer mon compte</a>" +
+                "            <a href='https://omar.nocturlab.fr/signup/submitcode?code=" + user.getActivationCode() + "' class='btn'>Activer mon compte</a>" +
                 "            <p>Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet e-mail en toute sécurité.</p>" +
                 "        </div>" +
                 "        <div class='footer'>©" +  Year.now().getValue() + " Initiative. Tous droits réservés.</div>" +
@@ -218,7 +218,7 @@ public class AuthenticationService {
                 "        <div class='content'>" +
                 "            <p>Bonjour <strong>" + user.getFirstName() + "</strong>,</p>" +
                 "            <p>Nous avons reçu une demande pour réinitialiser votre mot de passe. Cliquez sur le bouton ci-dessous pour réinitialiser votre mot de passe :</p>" +
-                "            <a href='http://localhost:5173/passwordreset?code=" + user.getActivationCode() + "' class='btn'>Réinitialiser le Mot de Passe</a>" +
+                "            <a href='https://omar.nocturlab.fr/passwordreset?code=" + user.getActivationCode() + "' class='btn'>Réinitialiser le Mot de Passe</a>" +
                 "            <p>Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet e-mail en toute sécurité.</p>" +
                 "        </div>" +
                 "        <div class='footer'>©" + Year.now().getValue() + " Initiative. Tous droits réservés.</div>" +
