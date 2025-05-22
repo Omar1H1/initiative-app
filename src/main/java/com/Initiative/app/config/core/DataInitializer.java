@@ -77,29 +77,30 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("20 dummy users initialized.");
     }
 
-    private byte[] loadProfileImage(RoleEnum role) {
-        String imagePath;
-        switch (role) {
-            case ADMIN:
-                imagePath = profilePictures[0];
-                break;
-            case SUPERVISOR:
-                imagePath = profilePictures[1];
-                break;
-            case PARRAIN:
-                imagePath = profilePictures[2];
-                break;
-            case PORTEUR:
-                imagePath = profilePictures[3];
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown role: " + role);
-        }
-
-        try (InputStream inputStream = Files.newInputStream(Paths.get("src/main/resources/" + imagePath))) {
-            return inputStream.readAllBytes();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load profile image for role: " + role, e);
-        }
+   private byte[] loadProfileImage(RoleEnum role) {
+    String imagePath;
+    switch (role) {
+        case ADMIN:
+            imagePath = profilePictures[0];
+            break;
+        case SUPERVISOR:
+            imagePath = profilePictures[1];
+            break;
+        case PARRAIN:
+            imagePath = profilePictures[2];
+            break;
+        case PORTEUR:
+            imagePath = profilePictures[3];
+            break;
+        default:
+            throw new IllegalArgumentException("Unknown role: " + role);
     }
+
+    try (InputStream inputStream = Files.newInputStream(Paths.get("src/main/resources/" + imagePath))) {
+        return inputStream.readAllBytes();
+    } catch (IOException e) {
+        throw new RuntimeException("Failed to load profile image for role: " + role, e);
+    }
+}
+ 
 }

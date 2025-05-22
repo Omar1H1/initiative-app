@@ -13,7 +13,7 @@ const useNotifications = (userId: string | undefined) => {
 
     console.log(`Subscribing to notifications for user ID: ${userId}`);
     const eventSource = new EventSource(
-      `http://localhost:8080/api/v1/notifications/match?userId=${userId}`,
+      `/api/v1/notifications/match?userId=${userId}`,
     );
 
     eventSource.onmessage = (event) => {
@@ -62,7 +62,7 @@ const useNotifications = (userId: string | undefined) => {
       eventSource.close();
     };
     const messageEventSource = new EventSource(
-      `http://localhost:8080/api/v1/notifications/messages?userId=${userId}`,
+      `/api/v1/notifications/messages?userId=${userId}`,
     );
 
     messageEventSource.onmessage = (event) => {

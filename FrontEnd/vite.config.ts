@@ -14,4 +14,9 @@ export default defineConfig({
       ],
     },
   },
+  preview: {
+    cors: {
+      origin: ['omar.nocturlab.fr']
+    }
+  }
 })
