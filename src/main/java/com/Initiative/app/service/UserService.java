@@ -23,7 +23,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public User createUser(User user) {
-        log.info("Saving user: {}", user.getSectorOfActivity());
+        log.info("Saving user: {}", user);
         return userRepository.save(user);
     }
 
