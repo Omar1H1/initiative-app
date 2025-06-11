@@ -16,6 +16,7 @@ import Notification from "./components/Notification.tsx";
 import { Toaster } from "react-hot-toast";
 import Profile from "./components/Profile.tsx";
 import Chat from "./chat/Chat.tsx";
+import ConversationList from "./chat/ConversationList.tsx";
 
 const App = () => {
   const setToken = useSetAtom(loginAtom);
@@ -41,6 +42,7 @@ const App = () => {
         <Route path="/passwordreset" element={<ResetPassword />} />
         <Route path="/panel" element={<AdminPanel />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/chat" element={<ConversationList />} />
         <Route path="/chat/:userId" element={<Chat />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

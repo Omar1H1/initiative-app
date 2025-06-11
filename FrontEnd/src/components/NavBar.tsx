@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { IoNotifications } from "react-icons/io5";
@@ -10,6 +11,7 @@ import ThemeToggle from "./ThemeToggle";
 import useNotifications from "../hooks/useNotifications";
 import logo from "../assets/logo.svg";
 import { GrUserAdmin } from "react-icons/gr";
+import { FaMessage } from "react-icons/fa6";
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
@@ -37,6 +39,11 @@ const Navbar = () => {
 
   const handleLogin = () => {
     navigate("/login");
+    setNav(false);
+  };
+
+  const handleChatClick = () => {
+    navigate("/chat");
     setNav(false);
   };
 
@@ -102,6 +109,18 @@ const Navbar = () => {
       {/* Desktop Navigation */}
       <ul className="hidden md:flex items-center">
         {token && (
+          // Chat Icon for Desktop
+          <li
+            onClick={handleChatClick}
+            className="cursor-pointer mr-4 relative"
+          >
+            <FaMessage
+              size={30}
+              className="hover:bg-purple-400 hover:text-white rounded-full hover:rounded-sm text-black dark:text-gray-200 p-1"
+            />
+          </li>
+        )}
+        {token && (
           <li
             onClick={handleNotificationClick}
             className="cursor-pointer mr-4 relative"
@@ -144,6 +163,16 @@ const Navbar = () => {
 
         {/* Mobile Navigation Items */}
         {token && (
+          // Chat Icon for Mobile
+          <li className="m-4 cursor-pointer" onClick={handleChatClick}>
+            <FaMessage
+              size={24}
+              className="inline-block mr-2 text-black dark:text-gray-200"
+            />
+            <span className="text-black dark:text-gray-200">Chat</span>
+          </li>
+        )}
+        {token && (
           <li className="m-4 cursor-pointer" onClick={handleNotificationClick}>
             <IoNotifications
               size={24}
@@ -168,3 +197,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

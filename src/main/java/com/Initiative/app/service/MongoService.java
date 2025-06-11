@@ -46,36 +46,59 @@ public class MongoService {
     void init() throws IOException {
         log.info("start");
         client = MongoClients.create(mongoUrl);
-    db = client.getDatabase(mongoDb);
-    messageCollection = db.getCollection("messages");
+        db = client.getDatabase(mongoDb);
+        messageCollection = db.getCollection("messages");
 
-    log.warn("Connection to MongoDB is established !!");
-  }
+        log.warn("Connection to MongoDB is established !!");
+    }
 
-  public Document insert(MessageDTO messageTosend) {
+    public Document insert(MessageDTO messageTosend) {
 
-    Document document = new Document("sender", messageTosend.getSender())
-    .append("receiver", messageTosend.getReceiver())
-    .append("content", messageTosend.getContent())
-    .append("date", LocalDateTime.now())
-    .append("conversationId", messageTosend.getConversationId());
+        Document document = new Document("sender", messageTosend.getSender())
+                .append("receiver", messageTosend.getReceiver())
+                .append("content", messageTosend.getContent())
+                .append("date", LocalDateTime.now())
+                .append("conversationId", messageTosend.getConversationId());
 
-    var id = messageCollection.insertOne(document).getInsertedId();
+        var id = messageCollection.insertOne(document).getInsertedId();
 
-    log.info("New message inserted: " + messageTosend.getContent());
+        log.info("New message inserted: " + messageTosend.getContent());
 
-    Document insertedDocument = messageCollection.find(Filters.eq("_id", id)).first();
+        Document insertedDocument = messageCollection.find(Filters.eq("_id", id)).first();
 
-    return insertedDocument;
-  }
+        return insertedDocument;
+    }
 
-  public List<Document> getMessagesByConversationId(String conversationId) {
-    MongoIterable<Document> messages = messageCollection.find(Filters.eq("conversationId", conversationId))
-    .sort(Sorts.descending("date"));
+    public List<Document> getMessagesByConversationId(String conversationId) {
+        MongoIterable<Document> messages = messageCollection.find(Filters.eq("conversationId", conversationId))
+                .sort(Sorts.descending("date"));
 
-    return StreamSupport.stream(messages.spliterator(), false)
-    .collect(Collectors.toList());
-  }
+        return StreamSupport.stream(messages.spliterator(), false)
+          .collect(Collectors.toList());
+    }
 
+    public List<String> getUserConversations(String userId) {
+      Integer numericUserId = null;
+      try {
+        numericUserId = Integer.parseInt(userId);
+      } catch (NumberFormatException e) {
+        return List.of();
+      }
 
+      MongoIterable<Document> conversations = messageCollection.find(
+          Filters.or(
+            Filters.eq("sender", numericUserId),
+            Filters.eq("receiver", numericUserId)
+            )
+          ).projection(
+            new Document("conversationId", 1)
+            ).sort(
+              Sorts.descending("date")
+              );
+
+      return StreamSupport.stream(conversations.spliterator(), false)
+        .map(doc -> doc.getString("conversationId"))
+        .distinct()
+        .collect(Collectors.toList());
+    }
 }
