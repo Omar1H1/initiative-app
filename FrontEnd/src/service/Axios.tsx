@@ -1,11 +1,19 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
 export class Axios {
   private readonly axiosInstance: AxiosInstance;
 
+  
+
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080',
+      
+      
+
+      baseURL: API_BASE_URL,
     });
 
     this.axiosInstance.interceptors.request.use(
