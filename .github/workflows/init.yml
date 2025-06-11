@@ -4,7 +4,7 @@ name: Build Spring and React
 on:
   push:
     branches:
-      - dockerfiles
+      - main
 
 permissions:
   contents: write
