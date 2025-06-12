@@ -96,28 +96,30 @@ const ConversationList = () => {
   if (error) {
     return (
       <div className="text-center text-xl text-red-500 mt-20">
-        Error: {error}
+      Error: {error}
       </div>
     );
   }
+
 
   if (conversationIds.length === 0) {
     return (
       <div className="px-6 mt-5 pt-24 pb-4 h-screen box-border flex flex-col items-center justify-center">
-        <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">No Conversations Yet</h2>
-        <p className="text-lg text-gray-600 dark:text-gray-400">
-          Looks like you haven't started any chats or received messages.
+      <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">Aucune conversation pour le moment</h2>
+      <p className="text-lg text-gray-600 dark:text-gray-400">
+      On dirait que vous n'avez commencé aucune discussion ni reçu de messages.
         </p>
-        <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">
-          Find some matches and start a new conversation!
-        </p>
+      <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">
+      Trouvez un match et commencez une nouvelle conversation !
+      </p>
       </div>
     );
   }
 
+
   return (
     <div className="px-6 mt-5 pt-24 pb-4 h-screen box-border flex flex-col items-center">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Your Conversations</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Votre conversations</h2>
       <div className="w-full max-w-2xl space-y-4">
         {conversationIds.map((convId) => {
           const partnerData = conversationPartners[convId];
